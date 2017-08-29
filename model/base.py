@@ -13,7 +13,7 @@ import traceback
 import uuid
 import re
 import math
-from sql import *
+from demeter.model.sql import *
 from demeter.core import *
 class Base(object):
 	__table__ = ''

@@ -71,7 +71,10 @@ class Demeter(object):
 	@classmethod
 	def service(cls, name):
 		if name not in cls.serviceObj:
-			service = cls.getClass(name, 'service.')
+			path = 'service.'
+			if name == 'common':
+				path = 'demeter.' + path 
+			service = cls.getClass(name, path)
 			cls.serviceObj[name] = service()
 		return cls.serviceObj[name]
 
