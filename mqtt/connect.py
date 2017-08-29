@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    demeter mqtt
+    name:connect.py
+    author:rabin
+"""
+from demeter.core import *
+import paho.mqtt.client as mqtt
+#from gevent import monkey; monkey.patch_all()
+#import gevent
+
+class Connect(object):
+
+	def __init__(self, act):
+		act.connect = self
+		self.client = mqtt.Client()
+		self.client.on_connect = self.connect
+		state = hasattr(act, 'message')
+		if state:
+			self.client.on_message = act.message
+		self.client.connect(Demeter.config['mqtt']['host'], Demeter.config['mqtt']['port'], int(Demeter.config['mqtt']['timeout']))
+		if state:
+			self.client.loop_forever()
+
+	def __del__(self):
+		pass
+
+	def getClient(self):
+		return self.client
+
+	def connect(self, client, userdata, flags, rc):
+		#print("Connected with result code "+str(rc))
+		#client.subscribe("sensor/#")
+		client.subscribe("pic/#")
+		"""
+		gevent.joinall([
+			gevent.spawn(self.subscribe, client, 'sensor/#'),
+			gevent.spawn(self.subscribe, client, 'pic/#'),
+			gevent.spawn(self.subscribe, client, 'msg/#'),
+		])
+		"""
+
+	@staticmethod
+	def subscribe(client, key):
+		client.subscribe(key)
+
+	def handle(self, key, value):
+		Demeter.record(key, value)
