@@ -7,8 +7,7 @@
 import os
 from demeter.core import *
 
-def loadFile():
-	path = Demeter.path + Demeter.web + '/page/'
+def loadFile(path):
 	files = os.listdir(path)
 	result = []
 	for key in files:
