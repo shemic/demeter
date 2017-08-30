@@ -18,7 +18,7 @@ class Demeter(object):
 	modelObj = {}
 	web = ''
 
-	def __new__(cls, *args, **kwargs):
+	def __new__(self, *args, **kwargs):
 		print 'error'
 		sys.exit()
 
@@ -26,19 +26,19 @@ class Demeter(object):
 		pass
 
 	@classmethod
-	def initConfig(cls):
-		cls.path = File.path()
-		if cls.config == {}:
+	def initConfig(self):
+		self.path = File.path()
+		if self.config == {}:
 			name = 'dev'
 			if 'DEMETER_CONF' in os.environ:
 				name = os.environ['DEMETER_CONF']
-			filename = cls.path + 'conf/'+name+'.conf'
+			filename = self.path + 'conf/'+name+'.conf'
 			if File.exists(filename):
 				config = ConfigParser.ConfigParser()
 				config.read(filename)
 
 				for item in config.sections():
-					cls.config[item] = cls.readConfig(config, item)
+					self.config[item] = self.readConfig(config, item)
 				return True
 			else:
 				print filename + ' is not exists'
@@ -53,42 +53,43 @@ class Demeter(object):
 		return result
 
 	@classmethod
-	def echo(cls, args):
-		module = cls.getObject('pprint')
+	def echo(self, args):
+		module = self.getObject('pprint')
 		module.pprint(args)
 
 	@classmethod
-	def record(cls, key, value):
+	def record(self, key, value):
 		# 记录日志
-		# cls.log(key, value)
-		service = cls.service('record')
+		# self.log(key, value)
+		service = self.service('record')
 		service.push(key, value)
 
 	@classmethod
-	def service(cls, name):
-		if name not in cls.serviceObj:
+	def service(self, name):
+		if name not in self.serviceObj:
 			path = 'service.'
 			if name == 'common':
 				path = 'demeter.'
 				name = 'service'
-			service = cls.getClass(name, path)
-			cls.serviceObj[name] = service()
-		return cls.serviceObj[name]
+			service = self.getClass(name, path)
+			self.serviceObj[name] = service()
+		return self.serviceObj[name]
 
 	@classmethod
-	def model(cls, table, name='rdb'):
-		if table not in cls.modelObj:
-			name = cls.config['db'][name]
-			config = cls.config[name]
-			db = cls.getClass(name, 'demeter.db.')
+	def model(self, table, name='rdb'):
+		if table not in self.modelObj:
+			name = self.config['db'][name]
+			config = self.config[name]
+			obj = self.getObject('db', 'demeter.')
+			db = getattr(obj, name.capitalize())
 			connect = db(config).get()
-			model = cls.getClass(table, 'model.')
-			cls.modelObj[table] =  model(name, connect, config)
-		return cls.modelObj[table]
+			model = self.getClass(table, 'model.')
+			self.modelObj[table] =  model(name, connect, config)
+		return self.modelObj[table]
 
 	@classmethod
-	def getClass(cls, name, path=''):
-		obj = cls.getObject(name, path)
+	def getClass(self, name, path=''):
+		obj = self.getObject(name, path)
 		return getattr(obj, name.capitalize())
 
 	@staticmethod
@@ -101,8 +102,8 @@ class Demeter(object):
 		return value == str(True)
 
 	@classmethod
-	def runtime(cls, path, file, content=''):
-		path = cls.path + 'runtime/' + path + '/'
+	def runtime(self, path, file, content=''):
+		path = self.path + 'runtime/' + path + '/'
 		File.mkdir(path)
 		file = path + file
 		if File.exists(file):
@@ -112,18 +113,19 @@ class Demeter(object):
 			return True
 
 	@classmethod
-	def webstart(cls, name):
-		cls.web = name
-		cls.getObject('main', name + '.')
+	def webstart(self, name):
+		self.web = name
+		self.webPath = self.path + self.web + '/'
+		self.getObject('main', name + '.')
 
 	@classmethod
-	def md5(cls, value, salt=False):
+	def md5(self, value, salt=False):
 		module = __import__('md5')
 		md5 = getattr(module, 'new')
 		md5_obj = md5()
 		if salt:
 			if salt == True:
-				salt = cls.rand()
+				salt = self.rand()
 			md5_obj.update(value + salt)
 			return md5_obj.hexdigest() + '_' + salt
 		else:

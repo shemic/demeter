@@ -195,8 +195,8 @@ class Web(object):
     def start(url):
         config = Demeter.config[Demeter.web]
         settings = {
-            "static_path": os.path.join(os.path.dirname(__file__), "static"),
-            "template_path": os.path.join(os.path.dirname(__file__), 'templates'),
+            "static_path": Demeter.webPath + 'static',
+            "template_path": Demeter.webPath + 'templates',
             "cookie_secret": "61oETzKXQAGaYekL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             "login_url": "/user/login",
             "xsrf_cookies": True,
