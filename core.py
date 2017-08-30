@@ -144,18 +144,18 @@ class Demeter(object):
 		return salt
 
 	@staticmethod
-	def mktime(value):
+	def mktime(value, str='%Y-%m-%d %H:%M:%S'):
 		module = __import__('time')
 		strptime = getattr(module, 'strptime')
 		mktime = getattr(module, 'mktime')
-		return int(mktime(strptime(value,'%Y-%m-%d %H:%M:%S')))
+		return int(mktime(strptime(value,str)))
 
 	@staticmethod
-	def date(value):
+	def date(value, str='%Y-%m-%d %H:%M:%S'):
 		module = __import__('datetime')
 		datetime = getattr(module, 'datetime')
 		fromtimestamp = getattr(datetime, 'fromtimestamp')
-		return str(fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S'))
+		return str(fromtimestamp(value).strftime(str))
 
 	@staticmethod
 	def error(string):

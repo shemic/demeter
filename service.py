@@ -16,15 +16,16 @@ class Service(object):
 		if search:
 			for key, value in search.items():
 				if value:
-					key = key.split('-')
-					if hasattr(model, key[0]):
-						attr = getattr(model, key[0])
-						if hasattr(attr, key[2]):
+					if '-' in key:
+						key = key.split('-')
+						keyLen = len(key)
+						if keyLen > 2 and key[2]:
 							method = key[2]
 						else:
 							method = 'assgin'
-						func = getattr(attr, method)
-						func(value)
+						self.assgin(model, key[0], value, method)
+					else:
+						self.assgin(model, key, value)
 		data = model.select(page=page)
 		return data
 
@@ -33,10 +34,7 @@ class Service(object):
 		model = self.model(name)
 		if kwd:
 			for key,value in kwd.items():
-				if hasattr(model, key):
-					attr = getattr(model, key)
-					func = getattr(attr, 'assgin')
-					func(value)
+				self.assgin(model, key, value)
 		data = model.select(type='fetchone')
 		return data
 
@@ -51,13 +49,10 @@ class Service(object):
 			return id
 		else:
 			for key, value in data.items():
-				if hasattr(model, key):
-					attr = getattr(model, key)
-					method = 'assgin'
-					if 'date' in key:
-						method = 'time'
-					func = getattr(attr, method)
-					func(value)
+				method = 'assgin'
+				if 'date' in key:
+					method = 'time'
+				self.assgin(model, key, value, method)
 			return model.insert()
 
 	# 删除
@@ -68,3 +63,10 @@ class Service(object):
 
 	def model(self, name):
 		return Demeter.model(name)
+
+	def assgin(self, model, key, value, method='assgin'):
+		if hasattr(model, key):
+			attr = getattr(model, key)
+			if hasattr(attr, method):
+				call = getattr(attr, method)
+				call(value)
