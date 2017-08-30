@@ -32,7 +32,9 @@ class Connect(object):
 	def connect(self, client, userdata, flags, rc):
 		#print("Connected with result code "+str(rc))
 		#client.subscribe("sensor/#")
-		client.subscribe("pic/#")
+		sub = Demeter.config['mqtt']['sub'].split(',')
+		for value in sub:
+			client.subscribe(value + "/#")
 		"""
 		gevent.joinall([
 			gevent.spawn(self.subscribe, client, 'sensor/#'),

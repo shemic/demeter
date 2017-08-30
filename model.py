@@ -187,9 +187,10 @@ class Model(object):
 		return Demeter.md5(value, salt=True)
 
 	def createState(self):
-		create = Demeter.bool(self._config['create'])
-		if create:
-			return Demeter.runtime(self._type, self.__table__, json.dumps(self._key))
+		if 'create' in self._config:
+			create = Demeter.bool(self._config['create'])
+			if create:
+				return Demeter.runtime(self._type, self.__table__, json.dumps(self._key))
 		return False
 
 	def drop(self):
