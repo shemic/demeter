@@ -11,7 +11,6 @@ import sys
 import getopt
 import ConfigParser
 import subprocess
-PATH = ''
 class Demeter(object):
 	path = ''
 	config = {}
@@ -28,10 +27,7 @@ class Demeter(object):
 
 	@classmethod
 	def initConfig(cls):
-		global PATH
-		if PATH == '':
-			PATH = File.path()
-		cls.path = PATH
+		cls.path = File.path()
 		if cls.config == {}:
 			name = 'dev'
 			if 'DEMETER_CONF' in os.environ:
@@ -73,20 +69,21 @@ class Demeter(object):
 		if name not in cls.serviceObj:
 			path = 'service.'
 			if name == 'common':
-				path = 'demeter.' + path
+				path = 'demeter.'
+				name = 'service'
 			service = cls.getClass(name, path)
 			cls.serviceObj[name] = service()
 		return cls.serviceObj[name]
 
 	@classmethod
-	def model(cls, table, type='rdb'):
+	def model(cls, table, name='rdb'):
 		if table not in cls.modelObj:
-			type = cls.config['db'][type]
-			config = cls.config[type]
-			db = cls.getClass(type, 'demeter.db.')
+			name = cls.config['db'][name]
+			config = cls.config[name]
+			db = cls.getClass(name, 'demeter.db.')
 			connect = db(config).get()
 			model = cls.getClass(table, 'model.')
-			cls.modelObj[table] =  model(type, connect, config)
+			cls.modelObj[table] =  model(name, connect, config)
 		return cls.modelObj[table]
 
 	@classmethod
