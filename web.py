@@ -222,6 +222,7 @@ class Web(object):
 		handlers = []
 		def application_setting():
 			handlers.append((r"/upload/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/upload/'}))
+			handlers.append((r"/camera/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/camera/'}))
 			handlers.append((r"/static/(.*)", tornado.web.StaticFileHandler, {"path":"static"}))
 			handlers.append((r"/(apple-touch-icon\.png)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])))
 			handlers.extend(url)

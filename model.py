@@ -165,9 +165,7 @@ class Model(object):
 				Demeter.error(field + ' not match:' + attr.match)
 
 	def time(self):
-		module = __import__('time')
-		time = getattr(module, 'time')
-		return int(time())
+		return Demeter.time()
 
 	def mktime(self, value):
 		return Demeter.mktime(value)

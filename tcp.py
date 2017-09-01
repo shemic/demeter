@@ -8,6 +8,7 @@
 import socket  
 import time
 from demeter.core import *
+from demeter.mqtt import *
 from tornado.tcpserver import TCPServer
 from tornado.ioloop  import IOLoop
 
@@ -51,18 +52,11 @@ class Server(TCPServer):
 		#print "connection num is:", len(Connection.clients)
 
 class Client(object):
-	HOST = '0.0.0.0'	# The remote host  
-	PORT = 8000		   # The same port as used by the server  
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-	s.connect((HOST, PORT))  
-	  
-	s.sendall('Hello, \nw')  
-	time.sleep(5)  
-	s.sendall('ord! \n')  
-	  
-	data = s.recv(1024)  
-	  
-	print 'Received', repr(data)  
-	  
-	time.sleep(60)  
-	s.close() 
+	def __init__(self, host='0.0.0.0', port=8000):
+		self.connect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.connect.connect((host, port))
+		
+	def send(self, msg):
+		self.connect.sendall(msg + '\n')
+		#data = self.connect.recv(1024)
+		self.connect.close()
