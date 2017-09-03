@@ -159,6 +159,15 @@ class Demeter(object):
 		return str(fromtimestamp(value).strftime(string))
 
 	@staticmethod
+	def isJson(value):
+		result = False
+		try:
+			result = json.loads(value)
+		except ValueError:
+			return result
+		return result
+
+	@staticmethod
 	def error(string):
 		print string
 		os._exit(0)
