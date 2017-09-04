@@ -87,9 +87,9 @@ class Base(tornado.web.RequestHandler):
 	def commonView(self, name):
 		self.view('common/'+name+'.html')
 
-	def commonList(self, model):
+	def commonList(self, model, order = 'cdate desc'):
 		self.data['state'] = self.input('state', True)
-		self.data['list'] = self.service('common').list(model, state=self.data['state'], search=self.data['search'], page=True)
+		self.data['list'] = self.service('common').list(model, state=self.data['state'], search=self.data['search'], page=True, order=order)
 
 	def commonOne(self, model, **kwd):
 		id = self.input('id')

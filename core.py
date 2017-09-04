@@ -9,6 +9,7 @@ import time
 import os
 import sys
 import getopt
+import json
 import ConfigParser
 import subprocess
 class Demeter(object):
@@ -51,6 +52,21 @@ class Demeter(object):
 		for item in value:
 			result[item] = config.get(type, item)
 		return result
+
+	@classmethod
+	def temp(self, key='', name='', value=''):
+		temp = Demeter.path + 'conf/temp.conf'
+		if File.exists(temp):
+			config = ConfigParser.ConfigParser()
+			config.read(temp)
+			if key and name:
+				config.set(key, name, value)
+				config.write(open(temp, 'w'))
+			else:
+				result = {}
+				for item in config.sections():
+					result[item] = self.readConfig(config, item)
+				return result
 
 	@classmethod
 	def echo(self, args):
