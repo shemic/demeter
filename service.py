@@ -61,6 +61,12 @@ class Service(object):
 		model.id = id
 		return model.update(state=state)
 
+	# 物理删除
+	def rDelete(self, name, id):
+		model = self.model(name)
+		model.id = id
+		return model.delete()
+
 	def model(self, name):
 		return Demeter.model(name)
 
