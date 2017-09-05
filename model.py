@@ -60,7 +60,7 @@ class Model(object):
 			totalSql = temp[0]
 			cur.execute(totalSql, bind)
 			Demeter.config['page']['totalNum'] = self.fetch(cur, 'fetchone', 'count')
-			Demeter.config['page']['total'] = math.ceil(round(float(Demeter.config['page']['totalNum'])/float(Demeter.config['page']['num']),2))
+			Demeter.config['page']['total'] = int(math.ceil(round(float(Demeter.config['page']['totalNum'])/float(Demeter.config['page']['num']),2)))
 		cur.execute(sql, bind)
 		if method == 'select':
 			return self.fetch(cur, fetch)
@@ -148,6 +148,8 @@ class Model(object):
 					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
 						val = Demeter.bool(val)
 					self.check(field, val, self._attr[field])
+					if type(val) == list:
+						val = tuple(val)
 					self._bind[field] = val
 					self._attr[field].val(self._bind[field])
 					self._attr[field].bind('%s')
