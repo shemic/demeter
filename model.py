@@ -564,6 +564,7 @@ class Sql(object):
 			if type(val) == list and val:
 				n = 0
 				for i in val:
+					print logic
 					data = self.field(field, bind, key, k, logic[n], exp[n])
 					n = n + 1
 					if data:
