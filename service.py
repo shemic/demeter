@@ -39,11 +39,11 @@ class Service(object):
 		return data
 
 	# 更新
-	def update(self, name, id, data):
+	def update(self, name, id, data, cdate=True):
 		model = self.model(name)
 		if id:
 			model.id = id
-			if 'cdate' not in data:
+			if cdate == True and 'cdate' not in data:
 				data['cdate'] = 'time'
 			model.update(data)
 			return id

@@ -158,7 +158,11 @@ class Demeter(object):
 		for i in xrange(length):
 			salt += chars[rand(0, len_chars)]
 		return salt
-
+	@staticmethod
+	def hour(value):
+		if value < 10:
+			return '0' + str(value)
+		return value
 	@staticmethod
 	def time():
 		return int(time.time())
