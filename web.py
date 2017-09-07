@@ -71,6 +71,9 @@ class Base(tornado.web.RequestHandler):
 	def input(self, key, value=None):
 		return self.get_argument(key, value)
 
+	def inputs(self, key):
+		return self.get_arguments(key)
+
 	def service(self, name):
 		return Demeter.service(name)
 

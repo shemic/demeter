@@ -534,7 +534,7 @@ class Sql(object):
 		return sql
 
 	def delete(self, table, args):
-		sql = 'DELETE FROM ' + table + self.where(args['fields'])
+		sql = 'DELETE FROM ' + table + self.where(args['key'], args['fields'])
 		return sql
 
 	def select(self, table, args):
