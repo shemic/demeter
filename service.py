@@ -10,7 +10,7 @@ from demeter.core import *
 class Service(object):
 
 	# 获取某个model下的列表数据
-	def list(self, name, state = True, search=None, page=False, order='cdate desc'):
+	def list(self, name, state = True, search=None, page=False, order='cdate desc', limit = '0,100'):
 		model = self.model(name)
 		model.state = state
 		if search:
@@ -26,7 +26,7 @@ class Service(object):
 						self.assgin(model, key[0], value, method)
 					else:
 						self.assgin(model, key, value)
-		data = model.select(page=page, order=order)
+		data = model.select(page=page, order=order, limit=limit)
 		return data
 
 	# 获取某个model下的数据

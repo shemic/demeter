@@ -14,23 +14,26 @@ import tornado.httpserver
 
 class Base(tornado.web.RequestHandler):
 	def initialize(self):
-		self.data = {}
+		self.assign()
 		self.page()
 		self.cookie()
 		self.setting()
-		self.assign()
 
 	def get_current_user(self):
 		return self.get_secure_cookie(self.KEYS[0])
 
 	def assign(self):
+		self.data = {}
 		self.data['setting'] = Demeter.config['setting']
+		self.data['base'] = Demeter.config['base']
 		
 	def cookie(self):
 		for key in self.KEYS:
 			cookie = None
-			if key in Demeter.config['base']:
-				cookie = Demeter.config['base'][key]
+			"""
+			if key in self.data['base']:
+				cookie = self.data['base'][key]
+			"""
 			if not cookie:
 				cookie = self.get_secure_cookie(key)
 				#cookie = self.get_cookie(key)
@@ -38,11 +41,11 @@ class Base(tornado.web.RequestHandler):
 				value = self.input(key)
 				if value:
 					#self.set_secure_cookie(key, value)
-					Demeter.config['setting'][key] = value
+					self.data['setting'][key] = value
 				else:
-					Demeter.config['setting'][key] = 0
+					self.data['setting'][key] = 0
 			else:
-				Demeter.config['setting'][key] = cookie
+				self.data['setting'][key] = cookie
 
 	def page(self):
 		Demeter.config['page'] = {}
@@ -83,8 +86,8 @@ class Base(tornado.web.RequestHandler):
 	def common(self, **kwd):
 		self.data['common'] = kwd
 		self.data['common']['argvs'] = ''
-		if Demeter.config['setting']['farm'] > 0:
-			farm = str(Demeter.config['setting']['farm'])
+		if self.data['setting']['farm'] > 0:
+			farm = str(self.data['setting']['farm'])
 			self.data['common']['argvs'] = '&farm=' + farm + '&search_farm_id-select-=' + farm
 
 	def commonView(self, name):
@@ -101,8 +104,8 @@ class Base(tornado.web.RequestHandler):
 			kwd['id'] = id
 		if kwd:
 			self.data['info'] = self.service('common').one(model, **kwd)
-		if not self.data['info'] and Demeter.config['setting']['farm'] > 0:
-			self.data['info']['farm_id'] = Demeter.config['setting']['farm']
+		if not self.data['info'] and self.data['setting']['farm'] > 0:
+			self.data['info']['farm_id'] = self.data['setting']['farm']
 
 	def commonUpdate(self, model, msg='', id=0, **kwd):
 		if not self.data['auth']:
@@ -133,9 +136,9 @@ class Base(tornado.web.RequestHandler):
 			self.out('yes', {'state':state})
 
 	def log(self, model, method, data):
-		if 'admin' in Demeter.config['setting'] and Demeter.config['setting']['admin'] > 0:
+		if 'admin' in self.data['setting'] and self.data['setting']['admin'] > 0:
 			insert = {}
-			insert['admin_id'] = Demeter.config['setting']['admin']
+			insert['admin_id'] = self.data['setting']['admin']
 			insert['model'] = model
 			insert['method'] = method
 			insert['data'] = json.dumps(data)
@@ -145,7 +148,7 @@ class Base(tornado.web.RequestHandler):
 		if not self.data['auth']:
 			self.auth()
 		else:
-			self.render(name, data=self.data)
+			self.render(name, data=self.data, Demeter=Demeter)
 
 	def auth(self):
 		self.out('您没有权限')
