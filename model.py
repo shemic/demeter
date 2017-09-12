@@ -138,7 +138,7 @@ class Model(object):
 					elif method == 'select' and self._attr[field].default and field == 'state':
 						val = self._attr[field].default
 						bind = True
-				if bind and val:
+				if bind and val != None:
 					if type(val) == list:
 						length = len(val)
 						if length <= 1:
