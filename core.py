@@ -26,6 +26,15 @@ class Demeter(object):
 	def __init__(self):
 		pass
 
+	@staticmethod
+	def isset(v): 
+		try :
+			type (eval(v))
+		except :
+			return 0
+		else : 
+			return 1
+
 	@classmethod
 	def initConfig(self):
 		self.path = File.path()
@@ -169,6 +178,8 @@ class Demeter(object):
 
 	@staticmethod
 	def mktime(value, string='%Y-%m-%d %H:%M:%S'):
+		if ' ' in string and ' ' not in value:
+			value = value + ' 00:00:00'
 		return int(time.mktime(time.strptime(value,string)))
 
 	@staticmethod
@@ -186,6 +197,16 @@ class Demeter(object):
 		except ValueError:
 			return result
 		return result
+
+	@staticmethod
+	def compressUuid(value):
+		row = value.replace('-', '')
+		code = ''
+		hash = [x for x in "0123456789-abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+		for i in xrange(10):
+			enbin = "%012d" % int(bin(int(row[i * 3] + row[i * 3 + 1] + row[i * 3 + 2], 16))[2:], 10)
+			code += (hash[int(enbin[0:6], 2)] + hash[int(enbin[6:12], 2)])
+		return code
 
 	@staticmethod
 	def error(string):

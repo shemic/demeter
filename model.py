@@ -10,7 +10,6 @@ import uuid
 import short_url
 import json
 import traceback
-import uuid
 import re
 import math
 from demeter.core import *
