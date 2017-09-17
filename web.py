@@ -148,7 +148,15 @@ class Base(tornado.web.RequestHandler):
 		if not self.data['auth']:
 			self.auth()
 		else:
-			self.render(name, data=self.data, Demeter=Demeter)
+			config = Demeter.config[Demeter.web]
+			path = ''
+			if 'mobile' in config:
+				mobile = Demeter.checkMobile(self.request)
+				if mobile:
+					path = 'mobile/'
+				else:
+					path = 'pc/'
+			self.render(path + name, data=self.data, Demeter=Demeter)
 
 	def auth(self):
 		self.out('您没有权限')
