@@ -179,7 +179,7 @@ class Demeter(object):
 
 	@staticmethod
 	def mktime(value, string='%Y-%m-%d %H:%M:%S'):
-		if ' ' in string and ' ' not in value and value:
+		if ' ' in string and ' ' not in value:
 			value = value + ' 00:00:00'
 		return int(time.mktime(time.strptime(value,string)))
 

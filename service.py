@@ -15,7 +15,7 @@ class Service(object):
 		model.state = state
 		if search:
 			for key, value in search.items():
-				if value != None:
+				if value or value == 0:
 					if '-' in key:
 						key = key.split('-')
 						keyLen = len(key)

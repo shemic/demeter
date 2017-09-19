@@ -146,7 +146,7 @@ class Model(object):
 						val = self.createMd5(val)
 					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
 						val = Demeter.bool(val)
-					self.check(field, val, self._attr[field])
+					#self.check(field, val, self._attr[field])
 					if type(val) == list:
 						val = tuple(val)
 					self._bind[field] = val
