@@ -115,6 +115,7 @@ class Model(object):
 				self._attr[field] = fields[field]
 				self._key[field] = self._attr[field].getKey()
 				insert = (method == 'insert')
+				update = (insert or method == 'update')
 				if insert and self._attr[field].uuid:
 					self.setUuid(field, col)
 				bind = False
@@ -146,7 +147,8 @@ class Model(object):
 						val = self.createMd5(val)
 					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
 						val = Demeter.bool(val)
-					#self.check(field, val, self._attr[field])
+					if update:
+						self.check(field, val, self._attr[field])
 					if type(val) == list:
 						val = tuple(val)
 					self._bind[field] = val
@@ -161,9 +163,20 @@ class Model(object):
 			if not val:
 				Demeter.error(field + ' not exists')
 		elif attr.match:
-			result = re.search(attr.match, val)
+			if '|' in attr.match:
+				temp = attr.match.split('|')
+				match = temp[0]
+				error = temp[1]
+			else:
+				match = attr.match
+				error = field + ' not match:' + match
+			if hasattr(Check, match):
+				method = getattr(Check, match)
+				result = method(val)
+			else:
+				result = re.search(match, val)
 			if not result:
-				Demeter.error(field + ' not match:' + attr.match)
+				Demeter.error(error)
 
 	def time(self):
 		return Demeter.time()
@@ -274,15 +287,21 @@ class Fields(object):
 		return self
 
 	def exp(self, value):
+		"""
 		if type(self.expValue) != list:
 			self.expValue = []
 		self.expValue.append(value)
+		"""
+		self.expValue = value
 		return self
 
 	def logic(self, value):
+		"""
 		if type(self.logicValue) != list:
 			self.logicValue = []
 		self.logicValue.append(value)
+		"""
+		self.logicValue = value
 		return self
 
 	def val(self, value, exp='=', logic='and'):
@@ -344,9 +363,12 @@ class Fields(object):
 		return self
 
 	def add(self, value):
+		"""
 		if not self.argv:
 			self.argv = []
 		self.argv.append(value)
+		"""
+		self.argv = value
 		return self
 
 	def ins(self, value):

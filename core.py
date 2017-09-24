@@ -13,12 +13,14 @@ import getopt
 import json
 import ConfigParser
 import subprocess
+from tornado.web import Finish
 class Demeter(object):
 	path = ''
 	config = {}
 	serviceObj = {}
 	modelObj = {}
 	web = ''
+	request = False
 
 	def __new__(self, *args, **kwargs):
 		print 'error'
@@ -226,10 +228,15 @@ class Demeter(object):
 			return True
 		return False
 
-	@staticmethod
-	def error(string):
-		print string
-		os._exit(0)
+	@classmethod
+	def error(self, string):
+		if self.request:
+			self.request.out(string)
+			#self.request.finish()
+			raise Finish()
+		else:
+			print string
+			os._exit(0)
 
 class File(object):
 
@@ -300,5 +307,25 @@ class Shell(object):
 				if popen.poll() is not None:
 					break
 			return output
+
+class Check(object):
+	@staticmethod
+	def match(rule, value):
+		if not rule.match(value):
+			return False
+		return True
+
+	@staticmethod
+	def mobile(value):
+		rule = re.compile(r'1\d{10}')
+		return Check.match(rule, value)
+
+	@staticmethod
+	def number(value):
+		try:
+			int(value)
+			return True
+		except ValueError:
+			return False
 
 Demeter.initConfig()

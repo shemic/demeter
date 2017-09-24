@@ -14,6 +14,7 @@ import tornado.httpserver
 
 class Base(tornado.web.RequestHandler):
 	def initialize(self):
+		Demeter.request = self
 		self.assign()
 		self.page()
 		self.cookie()
@@ -185,7 +186,7 @@ class Base(tornado.web.RequestHandler):
 		elif function:
 			result = '<script>parent.' + function + '(' + result + ')' + '</script>';
 		self.write(result)
-		#self.finish(result)
+		self.finish()
 
 class Web(object):
 	@staticmethod
