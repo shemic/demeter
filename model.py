@@ -48,6 +48,8 @@ class Model(object):
 		for value in self._key:
 			if value[0] in self._bind and self._bind[value[0]] != None:
 				val = self._bind[value[0]]
+				if method == 'insert':
+					self.check(value[0], val, self._attr[value[0]])
 				self._attr[value[0]].unset()
 				if type(val) == list and val:
 					for i in val:
@@ -148,8 +150,6 @@ class Model(object):
 						val = self.createMd5(val)
 					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
 						val = Demeter.bool(val)
-					if update:
-						self.check(field, val, self._attr[field])
 					if type(val) == list:
 						val = tuple(val)
 					self._bind[field] = val
@@ -162,7 +162,7 @@ class Model(object):
 	def check(self, field, val, attr):
 		if attr.match == 'not':
 			if not val:
-				Demeter.error(field + ' not exists')
+				self.error(field + ' not exists')
 		elif attr.match:
 			if '|' in attr.match:
 				temp = attr.match.split('|')
@@ -177,7 +177,14 @@ class Model(object):
 			else:
 				result = re.search(match, val)
 			if not result:
-				Demeter.error(error)
+				self.error(error)
+
+	def error(self, msg):
+		for value in self._key:
+			if value[0] in self._bind and self._bind[value[0]] != None:
+				self._attr[value[0]].unset()
+		self._set = {}
+		Demeter.error(msg)
 
 	def time(self):
 		return Demeter.time()
