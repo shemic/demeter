@@ -43,6 +43,7 @@ class Model(object):
 					self._set[key] = False
 				elif 'date' in key:
 					self._set[key] = self.mktime(self._set[key])
+				self.check(key, self._set[key], self._attr[key])
 				bind.append(self._set[key])
 		for value in self._key:
 			if value[0] in self._bind and self._bind[value[0]] != None:
