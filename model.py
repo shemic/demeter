@@ -35,15 +35,15 @@ class Model(object):
 		bind = []
 		if self._set:
 			for key in self._set:
+				self.check(key, self._set[key], self._attr[key])
 				if self._set[key] == 'time':
 					self._set[key] = self.time()
 				elif self._set[key] == 'True':
 					self._set[key] = True
 				elif self._set[key] == 'False':
 					self._set[key] = False
-				elif 'date' in key:
+				elif 'date' in key and type(self._set[key]) != int:
 					self._set[key] = self.mktime(self._set[key])
-				self.check(key, self._set[key], self._attr[key])
 				bind.append(self._set[key])
 		for value in self._key:
 			if value[0] in self._bind and self._bind[value[0]] != None:
