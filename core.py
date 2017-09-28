@@ -228,6 +228,13 @@ class Demeter(object):
 			return True
 		return False
 
+	@staticmethod
+	def exp(exp, value):
+		if exp:
+			exp = exp.replace('{n}', value)
+			value = str(eval(exp))
+		return value
+
 	@classmethod
 	def error(self, string):
 		if self.request:
