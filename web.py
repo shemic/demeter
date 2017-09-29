@@ -116,8 +116,6 @@ class Base(tornado.web.RequestHandler):
 				id = self.input('id')
 			if kwd:
 				info = self.service('common').one(model, **kwd)
-				if id:
-					id = int(id)
 				if info and (id != info['id']):
 					self.out(msg)
 					return
