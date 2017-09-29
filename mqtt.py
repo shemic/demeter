@@ -59,8 +59,8 @@ class Pub(object):
 	def __del__(self):
 		pass
 
-	def push(self, key, msg):
-		self.connect.getClient().publish(key,msg)
+	def push(self, key, msg, qos=0, retain=False):
+		self.connect.getClient().publish(key,msg,qos,retain)
 
 
 class Sub(object):
