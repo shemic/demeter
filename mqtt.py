@@ -60,13 +60,16 @@ class Pub(object):
 		pass
 
 	def push(self, key, msg, qos=0, retain=False, callback=False, param=False):
-		self.connect.getClient().publish(key,payload=msg,qos=qos,retain=retain)
+		result = self.connect.getClient().publish(key,payload=msg,qos=qos,retain=retain)
 
 		if qos in (1,2):
 			self.callback = callback
 			self.param = param
 			self.connect.client.on_publish = self.publish
 			self.connect.client.loop_forever()
+		else:
+			self.connect.client.disconnect()
+		return result
 
 	def publish(self, client, userdata, mid):
 		self.callback(self.param, client, userdata, mid)
