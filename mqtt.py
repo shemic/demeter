@@ -59,9 +59,18 @@ class Pub(object):
 	def __del__(self):
 		pass
 
-	def push(self, key, msg, qos=0, retain=False):
-		self.connect.getClient().publish(key,msg,qos,retain)
+	def push(self, key, msg, qos=0, retain=False, callback=False, param=False):
+		self.connect.getClient().publish(key,payload=msg,qos=qos,retain=retain)
 
+		if qos in (1,2):
+			self.callback = callback
+			self.param = param
+			self.connect.client.on_publish = self.publish
+			self.connect.client.loop_forever()
+
+	def publish(self, client, userdata, mid):
+		self.callback(self.param, client, userdata, mid)
+		self.connect.client.disconnect()
 
 class Sub(object):
 
@@ -73,4 +82,5 @@ class Sub(object):
 
 	def message(self, client, userdata, msg):
 		#print(msg.topic+" "+str(msg.payload))
+		#return
 		self.connect.handle(msg.topic, str(msg.payload))
