@@ -125,7 +125,7 @@ class Model(object):
 					self.setUuid(field, col)
 				bind = False
 				val = self._attr[field].getArgv()
-				if val:
+				if val or val == False:
 					bind = True
 				else:
 					val = getattr(self, field)
