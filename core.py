@@ -7,6 +7,7 @@
 """
 import time
 import os
+import signal
 import re
 import sys
 import getopt
@@ -307,6 +308,7 @@ class Shell(object):
 			while time.time() < deadline and proc.poll() == None:
 				time.sleep(poll_seconds)
 			if proc.poll() == None:
+				os.killpg(proc.pid, signal.SIGTERM)
 				return 'timeout'
 
 			stdout,stderr = proc.communicate()
