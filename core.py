@@ -302,13 +302,13 @@ class Shell(object):
 			command = command + ' 1>/dev/null 2>&1 &'
 
 		if timeout > 0:
-			proc = subprocess.Popen(command,bufsize=0,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+			proc = subprocess.Popen(command,bufsize=0,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True, close_fds=True, preexec_fn = os.setsid)
 			poll_seconds = .250
 			deadline = time.time() + timeout
 			while time.time() < deadline and proc.poll() == None:
 				time.sleep(poll_seconds)
 			if proc.poll() == None:
-				os.kill(proc.pid, signal.SIGTERM)
+				os.killpg(proc.pid, signal.SIGTERM)
 				return 'timeout'
 
 			stdout,stderr = proc.communicate()
