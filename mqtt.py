@@ -15,10 +15,12 @@ class Connect(object):
 	def __init__(self, act):
 		act.connect = self
 		self.client = mqtt.Client()
-		self.client.on_connect = self.connect
 		state = hasattr(act, 'message')
 		if state:
+			self.client.on_connect = self.connectAndSub
 			self.client.on_message = act.message
+		else:
+			self.client.on_connect = self.connect
 		self.client.connect(Demeter.config['mqtt']['host'], Demeter.config['mqtt']['port'], int(Demeter.config['mqtt']['timeout']))
 		if state:
 			self.client.loop_forever()
@@ -30,6 +32,9 @@ class Connect(object):
 		return self.client
 
 	def connect(self, client, userdata, flags, rc):
+		pass
+
+	def connectAndSub(self, client, userdata, flags, rc):
 		#print("Connected with result code "+str(rc))
 		#client.subscribe("sensor/#")
 		sub = Demeter.config['mqtt']['sub'].split(',')
@@ -59,21 +64,29 @@ class Pub(object):
 	def __del__(self):
 		pass
 
-	def push(self, key, msg, qos=0, retain=False, callback=False, param=False):
+	def push(self, key, msg, qos=0, retain=False, callback=False, param=False, feedback=False):
 		result = self.connect.getClient().publish(key,payload=msg,qos=qos,retain=retain)
 
-		if qos in (1,2):
-			self.callback = callback
-			self.param = param
+		self.callback = callback
+		self.param = param
+		if feedback == True and 'key' in self.param:
+			self.connect.client.on_message = self.feedback
+			self.connect.client.subscribe(self.param['key'])
+			self.connect.client.loop_forever()
+		elif qos in (1,2):
 			self.connect.client.on_publish = self.publish
 			self.connect.client.loop_forever()
 		else:
 			self.connect.client.disconnect()
 		return result
 
-	def publish(self, client, userdata, mid):
-		self.callback(self.param, client, userdata, mid)
+	def publish(self, client, userdata, mid, msg='ok'):
+		self.callback(self.param, client, userdata, mid, msg)
 		self.connect.client.disconnect()
+
+	def feedback(self, client, userdata, msg):
+		if msg.topic == self.param['key']:
+			self.publish(client, userdata, 0, msg.payload)
 
 class Sub(object):
 

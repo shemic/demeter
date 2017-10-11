@@ -243,7 +243,7 @@ class Demeter(object):
 			raise Finish()
 		else:
 			print string
-			os._exit(0)
+			#os._exit(0)
 
 class File(object):
 
@@ -295,11 +295,23 @@ class File(object):
 
 class Shell(object):
 	@staticmethod
-	def popen(command, sub=False, bg=False):
+	def popen(command, sub=False, bg=False, timeout=0):
 		string = command
 		if bg == True:
 			command = command + ' 1>/dev/null 2>&1 &'
-		if sub == False:
+
+		if timeout > 0:
+			proc = subprocess.Popen(command,bufsize=0,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+			poll_seconds = .250
+			deadline = time.time() + timeout
+			while time.time() < deadline and proc.poll() == None:
+				time.sleep(poll_seconds)
+			if proc.poll() == None:
+				return 'timeout'
+
+			stdout,stderr = proc.communicate()
+			return stdout
+		elif sub == False:
 			process = os.popen(command)
 			output = process.read()
 			process.close()
