@@ -5,6 +5,11 @@
 	name:application.py
 	author:rabin
 """
+from gevent import monkey
+monkey.patch_all()
+import gevent
+import functools
+
 import os
 import json
 from demeter.core import *
@@ -17,11 +22,14 @@ import tornado.concurrent
 
 class Base(tornado.web.RequestHandler):
 	def initialize(self):
-		Demeter.request = self
-		self.assign()
-		self.page()
-		self.cookie()
-		self.setting()
+		try:
+			Demeter.request = self
+			self.assign()
+			self.page()
+			self.cookie()
+			self.setting()
+		except Exception, e:
+			return
 
 	def get_current_user(self):
 		return self.get_secure_cookie(self.KEYS[0])
@@ -190,10 +198,26 @@ class Base(tornado.web.RequestHandler):
 		self.finish()
 
 class Web(object):
-	@staticmethod
-	def auth(method):
-		return tornado.web.authenticated(method)
+	@classmethod
+	def auth(self, method):
+		tornado.web.authenticated(method)
+		return self.async(method)
 		
+	@staticmethod
+	def async(method):
+		@tornado.web.asynchronous
+		@tornado.gen.coroutine
+		@functools.wraps(method)
+		def callback(self, *args, **kwargs):
+			#self._auto_finish = False
+			try:
+				result = method(self, *args, **kwargs)
+				return result
+			except Exception, e:
+				return self.view('404.html')
+			#return gevent.spawn(method, self, *args, **kwargs)
+		return callback
+
 	@staticmethod
 	def file(path):
 		files = os.listdir(path)
