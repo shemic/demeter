@@ -76,8 +76,8 @@ class Pub(object):
 		elif qos in (1,2):
 			self.connect.client.on_publish = self.publish
 			self.connect.client.loop_forever()
-		else:
-			self.connect.client.disconnect()
+		#else:
+			#self.connect.client.disconnect()
 		return result
 
 	def publish(self, client, userdata, mid, msg='ok'):
