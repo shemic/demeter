@@ -200,7 +200,10 @@ class Base(tornado.web.RequestHandler):
 class Web(object):
 	@classmethod
 	def auth(self, method):
-		tornado.web.authenticated(method)
+		return tornado.web.authenticated(method)
+
+	@classmethod
+	def setting(self, method):
 		return self.async(method)
 		
 	@staticmethod
