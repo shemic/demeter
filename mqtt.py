@@ -97,6 +97,6 @@ class Sub(object):
 		pass
 
 	def message(self, client, userdata, msg):
-		print(msg.topic+" "+str(msg.payload))
+		#print(msg.topic+" "+str(msg.payload))
 		#return
 		self.connect.handle(msg.topic, str(msg.payload))
