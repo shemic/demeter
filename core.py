@@ -214,6 +214,8 @@ class Demeter(object):
 
 	@staticmethod
 	def checkMobile(request):
+		if 'Demeter-Mobile' in request.headers:
+			return True
 		userAgent = request.headers['User-Agent']
 		# userAgent = env.get('HTTP_USER_AGENT')
 
