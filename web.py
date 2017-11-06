@@ -250,12 +250,15 @@ class Web(object):
 	@staticmethod
 	def start(url):
 		config = Demeter.config[Demeter.web]
+		cookie = True
+		if 'xsrf_cookies' in config:
+			cookie = Demeter.bool(config['xsrf_cookies'])
 		settings = {
 			"static_path": Demeter.webPath + 'static',
 			"template_path": Demeter.webPath + 'templates',
 			"cookie_secret": "61oETzKXQAGaYekL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
 			"login_url": "/user/login",
-			"xsrf_cookies": True,
+			"xsrf_cookies": cookie,
 			"debug": Demeter.bool(config['debug']),
 			#"autoreload": Demeter.bool(config['autoreload']),
 			"port": config['port'],
