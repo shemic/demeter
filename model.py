@@ -162,6 +162,8 @@ class Model(object):
 		Counter().unset()
 
 	def check(self, field, val, attr):
+		if val == 'undefined':
+			self.error(error)
 		if attr.match == 'not':
 			if not val:
 				self.error(field + ' not exists')

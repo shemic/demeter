@@ -239,6 +239,14 @@ class Demeter(object):
 		return value
 
 	@classmethod
+	def curl(self, url):
+		module = __import__('tornado')
+		http = getattr(module, 'httpclient')
+		http_client = http.HTTPClient()
+		response = http_client.fetch(url)
+		return response
+
+	@classmethod
 	def error(self, string):
 		if self.request:
 			self.request.out(string)
