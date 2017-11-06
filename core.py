@@ -359,4 +359,12 @@ class Check(object):
 		except ValueError:
 			return False
 
+	@staticmethod
+	def numberFloat(value):
+		try:
+			float(value)
+			return True
+		except ValueError:
+			return False
+
 Demeter.initConfig()
