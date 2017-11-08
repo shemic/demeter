@@ -217,6 +217,7 @@ class Web(object):
 				result = method(self, *args, **kwargs)
 				return result
 			except Exception, e:
+				return self.out('404')
 				return self.view('404.html')
 			#return gevent.spawn(method, self, *args, **kwargs)
 		return callback

@@ -95,6 +95,13 @@ class Demeter(object):
 
 	@classmethod
 	def service(self, name):
+		path = 'service.'
+		if name == 'common':
+			path = 'demeter.'
+			name = 'service'
+		service = self.getClass(name, path)
+		return service()
+		"""
 		if name not in self.serviceObj:
 			path = 'service.'
 			if name == 'common':
@@ -103,9 +110,18 @@ class Demeter(object):
 			service = self.getClass(name, path)
 			self.serviceObj[name] = service()
 		return self.serviceObj[name]
+		"""
 
 	@classmethod
 	def model(self, table, name='rdb'):
+		name = self.config['db'][name]
+		config = self.config[name]
+		obj = self.getObject('db', 'demeter.')
+		db = getattr(obj, name.capitalize())
+		connect = db(config).get()
+		model = self.getClass(table, 'model.')
+		return model(name, connect, config)
+		"""
 		if table not in self.modelObj:
 			name = self.config['db'][name]
 			config = self.config[name]
@@ -115,6 +131,7 @@ class Demeter(object):
 			model = self.getClass(table, 'model.')
 			self.modelObj[table] =  model(name, connect, config)
 		return self.modelObj[table]
+		"""
 
 	@classmethod
 	def getClass(self, name, path=''):
