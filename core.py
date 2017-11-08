@@ -14,7 +14,6 @@ import getopt
 import json
 import ConfigParser
 import subprocess
-import ssl
 from tornado.web import Finish
 class Demeter(object):
 	path = ''
