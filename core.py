@@ -14,8 +14,6 @@ import getopt
 import json
 import ConfigParser
 import subprocess
-import urllib2
-from tornado.web import Finish
 class Demeter(object):
 	path = ''
 	config = {}
@@ -25,7 +23,6 @@ class Demeter(object):
 	request = False
 
 	def __new__(self, *args, **kwargs):
-		print 'error'
 		sys.exit()
 
 	def __init__(self):
@@ -258,12 +255,14 @@ class Demeter(object):
 
 	@classmethod
 	def curl(self, url):
+		import urllib2
 		req = urllib2.Request(url)
 		response = urllib2.urlopen(req)
 		return response.read()
 
 	@classmethod
 	def error(self, string):
+		from tornado.web import Finish
 		if self.request:
 			self.request.out(string)
 			#self.request.finish()
