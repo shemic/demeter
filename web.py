@@ -251,7 +251,7 @@ class Web(object):
 	@staticmethod
 	def start(url):
 		config = Demeter.config[Demeter.web]
-		cookie = True
+		cookie = False
 		if 'xsrf_cookies' in config:
 			cookie = Demeter.bool(config['xsrf_cookies'])
 		settings = {
