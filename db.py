@@ -55,7 +55,7 @@ class Mysql(object):
 		
 	def __init__(self, config):
 		pymysql = __import__('pymysql')
-		self.connect = pymysql.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'], database=config['dbname'])
+		self.connect = pymysql.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'])
 
 	def get(self):
 		return self.connect
