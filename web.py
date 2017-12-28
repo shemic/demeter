@@ -98,7 +98,7 @@ class Base(tornado.web.RequestHandler):
 	def common(self, **kwd):
 		self.data['common'] = kwd
 		self.data['common']['argvs'] = ''
-		if self.data['setting']['farm'] > 0:
+		if 'farm' in self.data['setting'] and self.data['setting']['farm'] > 0:
 			farm = str(self.data['setting']['farm'])
 			self.data['common']['argvs'] = '&farm=' + farm + '&search_farm_id-select-=' + farm
 
@@ -116,7 +116,7 @@ class Base(tornado.web.RequestHandler):
 			kwd['id'] = id
 		if kwd:
 			self.data['info'] = self.service('common').one(model, **kwd)
-		if not self.data['info'] and self.data['setting']['farm'] > 0:
+		if not self.data['info'] and 'farm' in self.data['setting'] and self.data['setting']['farm'] > 0:
 			self.data['info']['farm_id'] = self.data['setting']['farm']
 
 	def commonUpdate(self, model, msg='', id=0, **kwd):
@@ -217,6 +217,7 @@ class Web(object):
 				result = method(self, *args, **kwargs)
 				return result
 			except Exception, e:
+				print e
 				return self.out('404')
 				return self.view('404.html')
 			#return gevent.spawn(method, self, *args, **kwargs)
