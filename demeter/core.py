@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-	demeter core
-	name:demeter.py
+	demeter
+	name:core.py
 	author:rabin
 """
 import time
@@ -15,11 +15,13 @@ import ConfigParser
 import subprocess
 class Demeter(object):
 	path = ''
+	root = ''
 	config = {}
 	serviceObj = {}
 	modelObj = {}
 	web = ''
 	request = False
+	route = []
 
 	def __new__(self, *args, **kwargs):
 		sys.exit()
@@ -39,6 +41,7 @@ class Demeter(object):
 	@classmethod
 	def initConfig(self):
 		self.path = File.path()
+		self.root = File.cur_path()
 		if self.config == {}:
 			name = 'dev'
 			if 'DEMETER_CONF' in os.environ:
@@ -156,7 +159,7 @@ class Demeter(object):
 			return True
 
 	@classmethod
-	def webstart(self, name):
+	def web(self, name):
 		self.web = name
 		self.webPath = self.path + self.web + '/'
 		self.getObject('main', name + '.')

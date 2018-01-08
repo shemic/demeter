@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-	demeter tcp
-	name:server.py
+	demeter
+	name:tcp.py
 	author:rabin
 """
 import socket  

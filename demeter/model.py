@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    demeter database
-    name:__base__.py
+    demeter
+    name:model.py
     author:rabin
 """
 import os

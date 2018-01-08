@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-	demeter web
-	name:application.py
+	demeter
+	name:web.py
 	author:rabin
 """
 from gevent import monkey
@@ -221,6 +221,16 @@ class Web(object):
 			#return gevent.spawn(method, self, *args, **kwargs)
 		return callback
 
+	@classmethod
+	def load(self, file, local):
+		path = os.path.split(os.path.realpath(file))[0] + '/'
+		files = self.file(path)
+		url = []
+		for key in files:
+			module = __import__(key, local)
+			url = self.url(module, key, url)
+		Demeter.route = Demeter.route + url
+
 	@staticmethod
 	def file(path):
 		files = os.listdir(path)
@@ -248,7 +258,8 @@ class Web(object):
 				url.append((r'/'+key+'/'+act, attr))
 		return url
 	@staticmethod
-	def start(url):
+	def start():
+		print Demeter.route
 		config = Demeter.config[Demeter.web]
 		cookie = False
 		if 'xsrf_cookies' in config:
@@ -272,7 +283,7 @@ class Web(object):
 			handlers.append((r"/camera/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/camera/'}))
 			handlers.append((r"/static/(.*)", tornado.web.StaticFileHandler, {"path":"static"}))
 			handlers.append((r"/(apple-touch-icon\.png)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])))
-			handlers.extend(url)
+			handlers.extend(Demeter.route)
 
 		application_setting()
 		application = tornado.web.Application(handlers=handlers, **settings)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    demeter mqtt
-    name:connect.py
+    demeter
+    name:mqtt.py
     author:rabin
 """
 from demeter.core import *

@@ -12,9 +12,13 @@ def read(filename):
     """Read and return `filename` in root dir of project and return string"""
     return codecs.open(os.path.join(__DIR__, filename), 'r').read()
 
+class install(object):
+    def run(self):
+        print 22
+
 
 install_requires = read("requirements.txt").split()
-long_description = read('README.md')
+long_description = read('README.rst')
 
 
 setup(
@@ -23,12 +27,15 @@ setup(
     url='https://github.com/shemic/demeter',
     license='MIT License',
     author='Rabin',
+    author_email='2934170@qq.com',
     description=('A simple framework based on Tornado'),
     long_description=long_description,
     packages=['demeter'],
     install_requires = install_requires,
     #tests_require=['pytest'],
-    #cmdclass = {'test': Pytest},
+    cmdclass = {'test': install},
+    include_package_data=True,
+    package_data = {},
     data_files=[
         # Populate this with any files config files etc.
     ],
