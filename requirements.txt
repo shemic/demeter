@@ -1,9 +1,6 @@
 tornado
 gevent
 pymysql
-psycopg2
-influxdb
-redis
 celery
 short_url
 requests

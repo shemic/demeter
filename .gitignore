@@ -23,3 +23,5 @@ dist
 *.tmp*
 .idea
 demos/helloworld/runtime/*
+psycopg2
+influxdb
