@@ -2,9 +2,8 @@
 """
     demeter database
     name:product.py
-    author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class Product(Model):
 	__table__ = 'product'

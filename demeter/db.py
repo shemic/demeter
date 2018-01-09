@@ -6,11 +6,13 @@
 """
 
 class Influxdb(object):
+	"""
 	instance = None
 	def __new__(cls, *args, **kwd):
 		if Influxdb.instance is None:
 			Influxdb.instance = object.__new__(cls, *args, **kwd)
 		return Influxdb.instance
+	"""
 
 	def __init__(self, config):
 		influxdb = __import__('influxdb')
@@ -27,12 +29,13 @@ class Influxdb(object):
 
 
 class Postgresql(object):
+	"""
 	instance = None
 	def __new__(cls, *args, **kwd):
 		if Postgresql.instance is None:
 			Postgresql.instance = object.__new__(cls, *args, **kwd)
 		return Postgresql.instance
-		
+	"""
 	def __init__(self, config):
 		psycopg2 = __import__('psycopg2')
 		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'], database=config['dbname'])
@@ -46,12 +49,13 @@ class Postgresql(object):
 		return sql
 
 class Mysql(object):
+	"""
 	instance = None
 	def __new__(cls, *args, **kwd):
 		if Mysql.instance is None:
 			Mysql.instance = object.__new__(cls, *args, **kwd)
 		return Mysql.instance
-		
+	"""
 	def __init__(self, config):
 		pymysql = __import__('pymysql')
 		self.connect = pymysql.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'], charset=config['charset'])

@@ -137,7 +137,12 @@ class Model(object):
 		self._attr = {}
 		self._bind = {}
 		self._key = {}
-		col = (int, str, long, float, unicode, bool, uuid.UUID)
+		if Demeter.checkPy3():
+			col = (int, str, float, bool, uuid.UUID)
+			code = (str,)
+		else:
+			col = (int, str, long, float, unicode, bool, uuid.UUID)
+			code = (str, unicode)
 		for field in fields:
 			if isinstance(fields[field], Fields):
 				self._attr[field] = fields[field]
@@ -173,7 +178,7 @@ class Model(object):
 							val = val[0]
 					if insert and self._attr[field].md5:
 						val = self.createMd5(val)
-					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
+					if self._attr[field].type == 'boolean' and isinstance(val, code):
 						val = Demeter.bool(val, self._type)
 					if type(val) == list:
 						val = tuple(val)
@@ -445,13 +450,14 @@ class Fields(object):
 
 class Counter(object):
 	num = 0
+	"""
 	instance = None
 
 	def __new__(cls, *args, **kwd):
 		if Counter.instance is None:
 			Counter.instance = object.__new__(cls, *args, **kwd)
 		return Counter.instance
-
+	"""
 	def inc(self):
 		self.num = self.num + 1
 		return self.num
@@ -465,11 +471,13 @@ class Counter(object):
 		return self.num
 
 class Sql(object):
+	"""
 	instance = None
 	def __new__(cls, *args, **kwd):
 		if Sql.instance is None:
 			Sql.instance = object.__new__(cls, *args, **kwd)
 		return Sql.instance
+	"""
 
 	def __init__(self, type):
 		self.type = type

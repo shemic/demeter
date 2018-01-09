@@ -1,11 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     demeter database
     name:manage_role.py
-    author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class Manage_role(Model):
 	__table__ = 'manage_role'

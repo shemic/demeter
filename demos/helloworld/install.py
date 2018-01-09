@@ -21,4 +21,4 @@ def manage():
 
 manage()
 
-print 'install success!'
+Demeter.echo('install success!')

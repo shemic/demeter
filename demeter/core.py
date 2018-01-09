@@ -30,7 +30,7 @@ class Demeter(object):
 
 	@staticmethod
 	def checkPy3():
-		if sys.version > 3:
+		if sys.version > '3':
 			state = True
 		else:
 			state = False
@@ -40,11 +40,11 @@ class Demeter(object):
 	def getConfig(self):
 		state = self.checkPy3()
 		if state:
-			module = 'ConfigParser'
+			import configparser
+			return configparser.ConfigParser()
 		else:
-			module = 'configparser'
-		module = __import__(module)
-		return getattr(module, 'ConfigParser')
+			import ConfigParser
+			return ConfigParser.ConfigParser()
 
 	@staticmethod
 	def isset(v): 

@@ -4,7 +4,7 @@
     name:user.py
     author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class login_path(Load):
 	def get(self):

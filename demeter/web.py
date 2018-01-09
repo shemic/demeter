@@ -26,7 +26,7 @@ class Base(tornado.web.RequestHandler):
 			self.page()
 			self.cookie()
 			self.setting()
-		except Exception, e:
+		except Exception as e:
 			return
 
 	def get_current_user(self):
@@ -209,20 +209,23 @@ class Web(object):
 			try:
 				result = method(self, *args, **kwargs)
 				return result
-			except Exception, e:
-				print e
-				return self.out('404')
-				return self.view('404.html')
+			except Exception as e:
+				Demeter.echo(e)
+				try:
+					return self.view('404.html')
+				except Exception as e:
+					return self.out('404')
 			#return gevent.spawn(method, self, *args, **kwargs)
 		return callback
 
 	@classmethod
-	def init(self, file, local):
+	def init(self, file):
 		path = os.path.split(os.path.realpath(file))[0] + '/'
+		sys.path.append(path)
 		files = self.file(path)
 		url = []
 		for key in files:
-			module = __import__(key, local)
+			module = __import__(key)
 			url = self.url(module, key, url)
 		Demeter.route = Demeter.route + url
 
@@ -259,7 +262,7 @@ class Web(object):
 	@staticmethod
 	def start():
 		if 'route' in Demeter.config['setting']:
-			print(Demeter.route)
+			Demeter.echo(Demeter.route)
 		config = Demeter.config[Demeter.web]
 		cookie = False
 		if 'xsrf_cookies' in config:
@@ -296,7 +299,7 @@ class Web(object):
 			server.bind(settings['port'])
 			server.start(settings['process'])
 			try:		
-				print 'running on port %s' % settings['port']
+				Demeter.echo('running on port %s' % settings['port'])
 				tornado.ioloop.IOLoop.instance().start()
 
 			except KeyboardInterrupt:

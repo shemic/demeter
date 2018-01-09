@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     demeter database
     name:manage_admin.py
     author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class Manage_admin(Model):
 	__table__ = 'manage_admin'
