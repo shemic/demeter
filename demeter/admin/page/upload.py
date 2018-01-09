@@ -10,7 +10,7 @@ import os
 import uuid
 
 class upload_path(Load):
- 	@Web.auth
+	@Web.auth
 	@Web.setting
 	def post(self, *args, **kwargs):
 		url = self.request.protocol + "://" + self.request.host
