@@ -219,13 +219,13 @@ class Web(object):
 		return callback
 
 	@classmethod
-	def init(self, file):
+	def init(self, file, gbs):
 		path = os.path.split(os.path.realpath(file))[0] + '/'
 		sys.path.append(path)
 		files = self.file(path)
 		url = []
 		for key in files:
-			module = __import__(key)
+			module = __import__(key, gbs)
 			url = self.url(module, key, url)
 		Demeter.route = Demeter.route + url
 
@@ -238,7 +238,7 @@ class Web(object):
 		files = os.listdir(path)
 		result = []
 		for key in files:
-			if '.DS_Store' not in key and  '__' not in key and 'pyc' not in key:
+			if key and '.DS_Store' not in key and  '__' not in key and 'pyc' not in key:
 				key = key.replace('.py', '')
 				result.append(key)
 		return result
