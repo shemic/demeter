@@ -544,7 +544,7 @@ class Sql(object):
 
 			if val.comment:
 				if self.type == 'mysql':
-					fields.append(u'COMMENT \'' + val.comment + '\'')
+					fields.append('COMMENT \'' + val.comment + '\'')
 				else:
 					comment[key] = val.comment
 
