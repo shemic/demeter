@@ -232,10 +232,11 @@ class Web(object):
 		"""
 		url = []
 		for key in Demeter.getPackage(package):
-			module = __import__(key)
+			module = Demeter.getObject(key)
 			url = self.url(module, key, url)
 		Demeter.route = Demeter.route + url
 
+	"""
 	@staticmethod
 	def file(path):
 		files = os.listdir(path)
@@ -245,9 +246,12 @@ class Web(object):
 				key = key.replace('.py', '')
 				result.append(key)
 		return result
+	"""
+
 	@staticmethod
 	def url(module, key, url):
 		str = Demeter.getMethod(module)
+		key = key.split('.')[-1]
 		for i,j in str:
 			act = ''
 			if '_path' in i:

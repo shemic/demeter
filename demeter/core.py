@@ -12,6 +12,7 @@ import sys
 import getopt
 import json
 import subprocess
+import importlib
 class Demeter(object):
 	path = ''
 	root = ''
@@ -161,15 +162,21 @@ class Demeter(object):
 		for importer, modname, ispkg in pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None):
 			yield modname
 
+	@staticmethod
+	def getObject(name, path = ''):
+		return importlib.import_module(path + name)
+
+	"""
+	@classmethod
+	def getObject(self, name, path = ''):
+		module = __import__(path + name)
+		return getattr(module, name)
+	"""
+
 	@classmethod
 	def getClass(self, name, path=''):
 		obj = self.getObject(name, path)
 		return getattr(obj, name.capitalize())
-
-	@staticmethod
-	def getObject(name, path = ''):
-		module = __import__(path + name)
-		return getattr(module, name)
 
 	@staticmethod
 	def bool(value, type = 'db'):
@@ -212,9 +219,9 @@ class Demeter(object):
 		else:
 			return hashlib.md5(value.encode("utf-8")).hexdigest()
 
-	@staticmethod
-	def rand(length = 4):
-		module = __import__('random')
+	@classmethod
+	def rand(self, length = 4):
+		module = self.getObject('random')
 		rand = getattr(module, 'randint')
 		salt = ''
 		chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
@@ -237,9 +244,9 @@ class Demeter(object):
 			value = value + ' 00:00:00'
 		return int(time.mktime(time.strptime(value,string)))
 
-	@staticmethod
-	def date(value, string='%Y-%m-%d %H:%M:%S'):
-		module = __import__('datetime')
+	@classmethod
+	def date(self, value, string='%Y-%m-%d %H:%M:%S'):
+		module = self.getObject('datetime')
 		datetime = getattr(module, 'datetime')
 		fromtimestamp = getattr(datetime, 'fromtimestamp')
 		return str(fromtimestamp(value).strftime(string))
