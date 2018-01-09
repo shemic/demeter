@@ -22,4 +22,4 @@ dist
 *.pyo
 *.tmp*
 .idea
-demeter/helloworld/runtime/*
+demos/helloworld/runtime/*
