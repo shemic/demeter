@@ -273,20 +273,28 @@ class Web(object):
 			Demeter.echo(Demeter.route)
 		config = Demeter.config[Demeter.web]
 		cookie = False
+		if 'tornado' not in Demeter.config:
+			Demeter.config = {}
 		if 'xsrf_cookies' in config:
 			cookie = Demeter.bool(config['xsrf_cookies'])
-		settings = {
+		settings = dict({
 			"static_path": Demeter.webPath + 'static',
 			"template_path": Demeter.webPath + 'templates',
-			"cookie_secret": "61oETzKXQAGaYekL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
-			"login_url": "/user/login",
+			"cookie_secret": 'demeter',
+			"login_url": '/user/login',
 			"xsrf_cookies": cookie,
 			"debug": Demeter.bool(config['debug']),
 			#"autoreload": Demeter.bool(config['autoreload']),
 			"port": config['port'],
 			"max_buffer_size": int(config['max_buffer_size']),
 			"process": int(config['process'])
-		}
+		}, **Demeter.config['tornado'])
+
+		com = ('cookie_secret', 'login_url')
+		for v in com:
+			if v in config:
+				settings[v] = config[v]
+
 		handlers = []
 		def application_setting():
 			handlers.append((r"/upload/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/upload/'}))
