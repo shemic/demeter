@@ -11,7 +11,6 @@ import re
 import sys
 import getopt
 import json
-import ConfigParser
 import subprocess
 class Demeter(object):
 	path = ''
@@ -28,6 +27,24 @@ class Demeter(object):
 
 	def __init__(self):
 		pass
+
+	@staticmethod
+	def checkPy3():
+		if sys.version > 3:
+			state = True
+		else:
+			state = False
+		return state
+
+	@staticmethod
+	def getConfig():
+		state = self.checkPy3()
+		if state:
+			module = 'ConfigParser'
+		else:
+			module = 'configparser'
+		module = __import__(module)
+		return getattr(module, 'ConfigParser')
 
 	@staticmethod
 	def isset(v): 
@@ -48,7 +65,7 @@ class Demeter(object):
 				name = os.environ['DEMETER_CONF']
 			filename = self.path + 'conf/'+name+'.conf'
 			if File.exists(filename):
-				config = ConfigParser.ConfigParser()
+				config = self.getConfig()
 				config.read(filename)
 
 				for item in config.sections():
@@ -70,7 +87,7 @@ class Demeter(object):
 	def temp(self, key='', name='', value=''):
 		temp = Demeter.path + 'conf/temp.conf'
 		if File.exists(temp):
-			config = ConfigParser.ConfigParser()
+			config = self.getConfig()
 			config.read(temp)
 			if key and name:
 				config.set(key, name, value)
