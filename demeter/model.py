@@ -99,6 +99,12 @@ class Model(object):
 			cur.execute(totalSql, bind)
 			Demeter.config['page']['totalNum'] = self.fetch(cur, 'fetchone', 'count')
 			Demeter.config['page']['total'] = int(math.ceil(round(float(Demeter.config['page']['totalNum'])/float(Demeter.config['page']['num']),2)))
+		elif ';' in sql:
+			temp = sql.split(';')
+			result = []
+			for v in temp:
+				result.append(self.query(v, (), fetch=fetch, method=method, cur=cur))
+			return result
 		return self.query(sql, bind, fetch=fetch, method=method, cur=cur)
 
 	def fetchAll(self):
