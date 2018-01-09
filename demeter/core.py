@@ -100,8 +100,8 @@ class Demeter(object):
 
 	@classmethod
 	def echo(self, args):
-		module = self.getObject('pprint')
-		module.pprint(args)
+		import pprint
+		pprint.pprint(args)
 
 	@classmethod
 	def record(self, key, value):
