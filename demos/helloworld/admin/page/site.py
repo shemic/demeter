@@ -4,7 +4,7 @@
     name:site.py 站点相关
     author:rabin
 """
-from .__load__ import *
+from __load__ import *
 
 class site_path(Load):
 	@Web.auth

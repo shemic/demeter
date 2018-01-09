@@ -4,7 +4,7 @@
     name:admin.py
     author:rabin
 """
-from .__load__ import *
+from __load__ import *
 
 class admin_path(Load):
 	@Web.auth
