@@ -208,7 +208,7 @@ class Demeter(object):
 		salt = ''
 		chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
 		len_chars = len(chars) - 1
-		for i in xrange(length):
+		for i in range(length):
 			salt += chars[rand(0, len_chars)]
 		return salt
 	@staticmethod
