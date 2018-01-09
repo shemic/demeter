@@ -55,7 +55,7 @@ class Demeter(object):
 					self.config[item] = self.readConfig(config, item)
 				return True
 			else:
-				print filename + ' is not exists'
+				Demeter.echo(filename + ' is not exists')
 				sys.exit()
 
 	@staticmethod
@@ -279,7 +279,7 @@ class Demeter(object):
 			#self.request.finish()
 			raise Finish()
 		else:
-			print string
+			self.echo(string)
 			#os._exit(0)
 
 class File(object):
@@ -357,10 +357,10 @@ class Shell(object):
 		else:
 			popen  = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 			output = ''
-			print string
+			Demeter.echo(string)
 			while True:
 				output = popen.stdout.readline()
-				print output
+				Demeter.echo(output)
 				if popen.poll() is not None:
 					break
 			return output
