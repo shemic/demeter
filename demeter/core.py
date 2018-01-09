@@ -36,8 +36,8 @@ class Demeter(object):
 			state = False
 		return state
 
-	@staticmethod
-	def getConfig():
+	@classmethod
+	def getConfig(self):
 		state = self.checkPy3()
 		if state:
 			module = 'ConfigParser'
