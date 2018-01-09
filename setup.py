@@ -12,10 +12,6 @@ def read(filename):
     """Read and return `filename` in root dir of project and return string"""
     return codecs.open(os.path.join(__DIR__, filename), 'r').read()
 
-class install(object):
-    def run(self):
-        print 22
-
 
 install_requires = read("requirements.txt").split()
 long_description = read('README.rst')
@@ -33,7 +29,7 @@ setup(
     packages=['demeter'],
     install_requires = install_requires,
     #tests_require=['pytest'],
-    cmdclass = {'test': install},
+    #cmdclass = {'test': install},
     include_package_data=True,
     package_data = {},
     data_files=[
