@@ -45,6 +45,20 @@ class update_path(Load):
 
 		self.view('index.html')
 
+# 测试json  /main/json
+class json_path(Load):
+	@Web.setting
+	def get(self):
+		id = int(self.input('site', 1))
+		name = self.input('name', 'tests')
+		site = Demeter.model('site')
+		site.id = id
+		state = site.update(name=name)
+
+		data = site.select(type='fetchone')
+		
+		self.out('yes', data)
+
 # 测试数据库 使用sql（不建议使用） /main/sql.html
 class sql_html(Load):
 	@Web.setting
