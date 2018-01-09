@@ -151,6 +151,17 @@ class Demeter(object):
 		"""
 
 	@classmethod
+	def getMethod(self, module):
+		import inspect
+		return inspect.getmembers(module, callable)
+
+	@classmethod
+	def getPackage(self, package):
+		import pkgutil
+		for importer, modname, ispkg in pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None):
+			yield modname
+
+	@classmethod
 	def getClass(self, name, path=''):
 		obj = self.getObject(name, path)
 		return getattr(obj, name.capitalize())

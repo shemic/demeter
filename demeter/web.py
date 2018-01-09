@@ -219,19 +219,22 @@ class Web(object):
 		return callback
 
 	@classmethod
-	def init(self, file, gbs):
+	def init(self, application):
+		for v in application:
+			self.load(v)
+
+	@classmethod
+	def load(self, package):
+		"""
 		path = os.path.split(os.path.realpath(file))[0] + '/'
 		sys.path.append(path)
 		files = self.file(path)
+		"""
 		url = []
-		for key in files:
-			module = __import__(key, gbs)
+		for key in Demeter.getPackage(package):
+			module = __import__(key)
 			url = self.url(module, key, url)
 		Demeter.route = Demeter.route + url
-
-	@classmethod
-	def load(self):
-		pass
 
 	@staticmethod
 	def file(path):
@@ -244,8 +247,8 @@ class Web(object):
 		return result
 	@staticmethod
 	def url(module, key, url):
-		str = dir(module)
-		for i in str:
+		str = Demeter.getMethod(module)
+		for i,j in str:
 			act = ''
 			if '_path' in i:
 				act = i.replace('_path', '')
@@ -259,8 +262,9 @@ class Web(object):
 					url.append((r'/'+key, attr))
 				url.append((r'/'+key+'/'+act, attr))
 		return url
-	@staticmethod
-	def start():
+	@classmethod
+	def start(self, application=[]):
+		self.init(application)
 		if 'route' in Demeter.config['setting']:
 			Demeter.echo(Demeter.route)
 		config = Demeter.config[Demeter.web]
