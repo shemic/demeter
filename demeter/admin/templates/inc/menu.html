@@ -1,0 +1,34 @@
+<div class="layui-side layui-bg-black x-side">
+    <div class="layui-side-scroll">
+        <ul class="layui-nav layui-nav-tree site-demo-nav" lay-filter="side">
+            {% for index,key in enumerate(data['setting']['menuList'][0][0]) %}
+            {%set m = ',' + str(index) + '_' %}
+            {% if ('menu' in data['setting'] and m in data['setting']['menu']) or 'menu' not in data['setting'] %}
+            {%set icon = data['setting']['menuList'][0][1][index] %}
+            <li class="layui-nav-item">
+                <a class="javascript:;" href="javascript:;">
+                    <i class="layui-icon" style="top: 3px;">{% raw icon %}</i><cite>{{key}}</cite>
+                </a>
+                <dl class="layui-nav-child">
+                    {% for num,href in enumerate(data['setting']['menuList'][1][index][1]) %}
+                    {% if ('menu' in data['setting'] and m + str(href)+',' in data['setting']['menu']) or 'menu' not in data['setting'] %}
+                    {%set value = data['setting']['menuList'][1][index][0][num] %}
+                    <dd class="">
+                        <dd class="">
+                            <a href="javascript:;" _href="{{href}}">
+                                <cite>{{value}}</cite>
+                            </a>
+                        </dd>
+                    </dd>
+                    {% end %}
+                    {% end %}
+                </dl>
+            </li>
+            {% end %}
+            {% end %}
+            <li class="layui-nav-item" style="height: 30px; text-align: center">
+            </li>
+        </ul>
+    </div>
+
+</div>

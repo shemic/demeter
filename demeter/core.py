@@ -144,8 +144,15 @@ class Demeter(object):
 		return getattr(module, name)
 
 	@staticmethod
-	def bool(value):
-		return value == str(True)
+	def bool(value, type = 'db'):
+		if type == 'mysql':
+			value = value == str(True)
+			if value == True:
+				return '1'
+			else:
+				return '2'
+		else:
+			return value == str(True)
 
 	@classmethod
 	def runtime(self, path, file, content=''):
@@ -162,6 +169,8 @@ class Demeter(object):
 	def web(self, name):
 		self.web = name
 		self.webPath = self.path + self.web + '/'
+		if self.web == 'admin':
+			self.webPath = self.root + self.web + '/'
 		self.getObject('main', name + '.')
 
 	@classmethod

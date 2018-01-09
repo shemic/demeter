@@ -1,0 +1,110 @@
+{% extends "../theme/stat.html" %}
+
+{% block search %}
+  {% for index,key in enumerate(data['common']['search'][0]) %}
+    {%set value = data['common']['search'][1][index] %}
+    {%set param = key.split('-') %}
+    {% if 'label' in key %}
+    <label class="layui-form-label">{{value}}</label>
+    {% elif param[1] == 'input' %}
+    <div class="layui-input-inline"  style="width:auto" >
+      <input type="text" name="search_{{key}}"id="search_{{key}}" placeholder="{{value}}" autocomplete="off" class="layui-input" value="{% if data['search'] and key in data['search'] %}{{data['search'][key]}}{% end %}">
+    </div>
+    {% elif param[1] == 'time' %}
+    <div class="layui-input-inline"  style="width:auto">
+      <input type="text" name="search_{{key}}" id="search_{{key}}" placeholder="{{value}}" autocomplete="off" class="layui-input time" value="{% if data['search'] and key in data['search'] %}{{data['search'][key]}}{% end %}">
+    </div>
+    {% elif param[1] == 'select' %}
+    <label class="layui-form-label">{{value}}</label>
+    <div class="layui-input-inline"  style="width:auto">
+        {%set option = 'search_' + key %}
+        {% if option in data['common'] %}
+        {%set select = data['common'][option] %}
+        <select name="search_{{key}}" id="search_{{key}}" lay-verify="" lay-search>
+              <option value="">请选择一项</option>
+          {% for v in select %}
+              <option value="{{v['id']}}" {% if data['search'] and key in data['search'] and data['search'][key] == str(v['id']) %}selected{% end %}>{{v['name']}}</option>
+              {% end %}
+        </select>
+        {% end %}
+    </div>
+    {% end %}
+  {% end %}
+{% end %}
+
+
+{% block script %}
+<script src="{{static_url('js/echarts.common.min.js')}}" charset="utf-8"></script>
+<script type="text/javascript">
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+
+// 指定图表的配置项和数据
+var option = {
+    title: {
+        text: '{{data['info']['name']}}',
+        subtext: '数据来自{{data['farm']['name']}}'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data:[{% for key,value in enumerate(data['list']) %}{% if key > 0 %},{% end %}'{{value['name']}}'{% end %}]
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataZoom: {
+                yAxisIndex: 'none'
+            },
+            dataView: {readOnly: false},
+            magicType: {type: ['line', 'bar']},
+            restore: {},
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: {% for key,value in enumerate(data['list']) %}{% if key == 0 %}{% raw value['data']['time'] %}{% end %}{% end %}
+    },
+    yAxis: {
+        type: 'value',
+        axisLabel: {
+            formatter: '{value} {{data['type']['unit']}}'
+        }
+    },
+    series: [
+        {% for key,value in enumerate(data['list']) %}
+        {% if key > 0 %},{% end %}
+        {
+            name:'{{value['name']}}',
+            type:'line',
+            data:{% raw value['data']['value'] %},
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name: '最小值'}
+                ]
+            },
+            markLine: {
+                data: [
+                    {type: 'average', name: '平均值'}
+                ]
+            }
+        }
+        {% end %}
+    ]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>
+{% end %}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        {%include '../inc/header.html'%}
+        <link rel="stylesheet" type="text/css" href="{{static_url('lib/simditor/styles/simditor.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{static_url('lib/simditor/plugins/html/simditor-html.css')}}">
+    </head>
+    
+    <body>
+        <div class="x-body">
+            <form class="layui-form layui-form-pane" action="{% block action %}{% end %}" method="post" autocomplete="off" target="f1">
+            {% module xsrf_form_html() %}
+            <input type="hidden" name="function" id="function" value="msg"/>
+            <input type="hidden" name="url" id="url" value="{% block url %}{% end %}" />
+            <input type="hidden" name="project" id="project" value="ai" />
+            <input type="hidden" name="table" id="table" value="col" />
+            <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] > 0 %}{{data['info']['id']}}{% end %}" />
+            <iframe id="f1" name="f1" style="display:none;"></iframe>
+
+                {% block form %}
+                <div class="layui-form-item">
+                    <label for="L_title" class="layui-form-label">
+                        标题
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" id="L_title" name="title" required lay-verify="title"
+                        autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <div class="layui-input-block">
+                        <textarea id="content" name="content" 
+                        placeholder="请输入内容" class="layui-textarea fly-editor" style="height: 260px;"></textarea>
+                    </div>
+                    <label for="L_content" class="layui-form-label" style="top: -2px;">
+                        描述
+                    </label>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">
+                            所在类别
+                        </label>
+                        <div class="layui-input-block">
+                            <select lay-verify="required" name="cid">
+                                <option>
+                                </option>
+                                <optgroup label="Layui相关">
+                                    <option value="0">layui</option>
+                                    <option value="2">layer弹层</option>
+                                    <option value="3">LayIM即时通讯</option>
+                                </optgroup>
+                                <optgroup label="其它交流">
+                                    <option value="100">技术闲谈</option>
+                                    <option value="101">建议反馈</option>
+                                    <option value="168">官方公告</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {% end %}
+                <div class="layui-form-item" style="text-align:center">
+                    <button class="layui-btn" lay-filter="update" lay-submit>
+                        确定
+                    </button>
+                </div>
+            </form>
+        </div>
+        {%include '../inc/script.html'%}
+        <!-- 加载文本编辑器 -->
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/module.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/hotkeys.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/uploader.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/simditor.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/html/beautify-html.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/html/simditor-html.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/dropzone/simditor-dropzone.js')}}"></script>
+        <script>
+        layui.use(['laydate', 'form','layer','layedit','upload'], function(){
+            $ = layui.jquery;
+            var form = layui.form()
+            var layer = layui.layer
+            var layedit = layui.layedit;
+
+            if ($('.time').length) {
+                laydate = layui.laydate;//日期插件
+                var date = {
+                    //min: laydate.now()
+                    max: '2099-06-16 23:59:59'
+                    ,format: 'YYYY-MM-DD hh:mm:ss'
+                    ,istoday: true
+                    ,istime: true
+                };
+                $('.time').each(function()
+                {
+                    $(this).click(function()
+                    {
+                        date.elem = this;
+                        laydate(date);
+                    })
+                })
+            }
+
+            var xsrf = getCookie("_xsrf");
+            var uploadUrl = '/upload?_xsrf='+xsrf;
+            initEditor();
+            /*
+            layedit.set({
+              uploadImage: {
+                url: uploadUrl
+                ,type: 'post'
+              }
+            });
+
+            if ($('.layui-editor').length) {
+                $('.layui-editor').each(function()
+                {
+                    id = $(this).attr('id');
+                    var index = layedit.build(id);
+                    layedit.sync(index)
+                });
+            }
+            */
+            layui.upload({
+                url: uploadUrl
+                ,success: function(res, input){ //上传成功后的回调
+                    var id = $(input).attr('id').replace('upload_', '');
+                    $('#upload_' + id + '_show').attr('src',res.data.src + '?v' + Date.parse(new Date())).show();
+                    $('#update_' + id).val(res.data.src);
+                }
+            });
+            
+            if ($(".selectLoad").length) {
+                $(".selectLoad").each(function()
+                {
+                    if ($(this).attr('lay-filter')) {
+                        var e = $(this);
+                        selectShow(e, e.attr('change'));
+                        form.render();
+                    }
+                })
+            }
+
+            form.on('select(yes)', function(data){
+              var e = $(data.elem);
+              selectShow(e, e.attr('change'));
+              form.render();
+            });  
+
+            form.verify({
+              select: function(value, item){
+                if(!value || value == '请选择'){
+                  return '必填项不能为空';
+                }
+              }
+            });
+
+            {% block script %}
+            {% end %}
+
+            form.on('submit(update)');
+        });
+        </script>
+    </body>
+
+</html>

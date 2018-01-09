@@ -1,0 +1,15 @@
+<div class="layui-header header header-demo">
+	<div class="layui-main">
+	    <a class="logo" href="/">
+	        {{data['setting']['name']}}
+	    </a>
+	    <ul class="layui-nav" lay-filter="">
+	      <li class="layui-nav-item">
+	        <a href="javascript:;">{{data['setting']['adminInfo']['username']}}</a>
+	        <dl class="layui-nav-child"> <!-- 二级菜单 -->
+	          <dd><a href="/user/loginout">退出</a></dd>
+	        </dl>
+	      </li>
+	    </ul>
+	</div>
+</div>

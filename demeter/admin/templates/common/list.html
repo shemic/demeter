@@ -1,0 +1,122 @@
+{% extends "../theme/list.html" %}
+
+{% block search %}
+  {% for index,key in enumerate(data['common']['search'][0]) %}
+    {%set value = data['common']['search'][1][index] %}
+    {%set param = key.split('-') %}
+    {%set length = len(param) %}
+    {% if 'label' in key %}
+    <label class="layui-form-label">{{value}}</label>
+    {% elif param[1] == 'input' %}
+    <div class="layui-input-inline"  style="width:auto" >
+      <input type="text" name="search_{{key}}"id="search_{{key}}" placeholder="{{value}}" autocomplete="off" class="layui-input" value="{% if data['search'] and key in data['search'] %}{{data['search'][key]}}{% end %}">
+    </div>
+    {% elif param[1] == 'hidden' %}
+    <div class="layui-input-inline"  style="width:auto" >
+      <input type="hidden" name="search_{{key}}" id="search_{{key}}" placeholder="{{value}}" autocomplete="off" class="layui-input" value="{% if data['search'] and key in data['search'] %}{{data['search'][key]}}{% end %}">
+    </div>
+    {% elif param[1] == 'time' %}
+    <div class="layui-input-inline"  style="width:auto">
+      <input type="text" name="search_{{key}}" id="search_{{key}}" placeholder="{{value}}" autocomplete="off" class="layui-input time" value="{% if data['search'] and key in data['search'] %}{{data['search'][key]}}{% end %}">
+    </div>
+    {% elif param[1] == 'select' %}
+    <label class="layui-form-label">{{value}}</label>
+    <div class="layui-input-inline"  style="width:auto">
+        {%set option = 'search_' + key %}
+        {% if option in data['common'] %}
+        {%set select = data['common'][option] %}
+        <select class="layui-select selectLoad" name="search_{{key}}" id="search_{{key}}" lay-verify="" lay-search="" {% if length > 3 and param[3]%} change="{{param[3]}}" lay-filter="yes"{% end %}>
+              <option value="">请选择一项</option>
+          {% for v in select %}
+              <option value="{{v['id']}}" {% if length > 4 and param[4] %}parent="{% if param[4] in v %}{{v[param[4]]}}{% end %}"{% end %} {% if data['search'] and key in data['search'] and data['search'][key] == str(v['id']) %}selected{% end %}>{{v['name']}}</option>
+              {% end %}
+        </select>
+        {% end %}
+    </div>
+    {% end %}
+  {% end %}
+{% end %}
+
+{% block button %}
+  {% if data['state'] == True %}
+    {% if 'add' in data['common'] and data['common']['add'] == False %}
+    {% else %}
+    <button class="layui-btn" onclick="show('添加{{data['common']['name']}}','{{data['common']['path']}}_update?{{data['common']['argvs']}}','{{data['common']['width']}}','{{data['common']['height']}}'{% if 'full' in data['common'] %},'{{data['common']['full']}}'{% end %})"><i class="layui-icon">&#xe608;</i>添加</button>
+    {% end %}
+
+    {% if data['common']['state'] == True %}
+    <button class="layui-btn layui-btn-danger" onclick="showPage('{{data['common']['path']}}?state=False{{data['common']['argvs']}}')"><i class="layui-icon"></i>回收站</button>
+    {% end %}
+
+    {% if 'button' in data['common'] %}
+    {% for value in data['common']['button'] %}
+    <button class="layui-btn" onclick="show('{{value['name']}}','{{value['link']}}','{{data['common']['width']}}','{{data['common']['height']}}'{% if 'full' in data['common'] %},'{{data['common']['full']}}'{% end %})"><i class="layui-icon">&#xe608;</i>{{value['name']}}</button>
+    {% end %}
+    {% end %}
+  {% else %}
+    <button class="layui-btn" onclick="showPage('{{data['common']['path']}}?{{data['common']['argvs']}}')"><i class="layui-icon"></i>返回</button>
+  {% end %}
+{% end %}
+
+{% block thead %}
+{% for value in data['common']['thead'] %}
+<th>
+    {{value}}
+</th>
+{% end %}
+{% if 'edit' in data['common'] and data['common']['edit'] == False %}
+{% else %}
+<th>
+    操作
+</th>
+{% end %}
+{% end %}
+
+{% block tbody %}
+  {% for value in data['list'] %}
+  <tr>
+    {% for key in data['common']['tbody'] %}
+    <td>
+        {% if key in value %}
+          {% if 'date' in key %}
+            {{datetime.datetime.fromtimestamp(value[key]).strftime('%Y-%m-%d %H:%M:%S')}}
+          {% elif value[key] %}
+            {% raw value[key] %}
+          {% else %}
+          0
+          {% end %}
+        {% else %}
+          {% raw key %}
+        {% end %}
+    </td>
+    {% end %}
+    {% if 'edit' in data['common'] and data['common']['edit'] == False %}
+    {% else %}
+    <td class="td-manage">
+        {% if data['state'] == True %}
+       
+        <a title="编辑" href="javascript:;" onclick="show('编辑{{data['common']['name']}}','{{data['common']['path']}}_update?id={{value['id']}}{{data['common']['argvs']}}','{{data['common']['width']}}','{{data['common']['height']}}'{% if 'full' in data['common'] %},'{{data['common']['full']}}'{% end %})"
+        class="ml-5" style="text-decoration:none">
+            <i class="layui-icon">&#xe642;</i>
+        </a>
+        
+          {% if data['common']['state'] == True %}
+          <a title="删除" href="javascript:;" onclick="del(this,'{{value['id']}}', '{{data['common']['path']}}_update')"
+          style="text-decoration:none">
+              <i class="layui-icon">&#xe640;</i>
+          </a>
+          {% end %}
+        {% else %}
+        <a title="恢复" href="javascript:;" onclick="rec(this,'{{value['id']}}', '{{data['common']['path']}}_update')"
+        style="text-decoration:none">
+            <i class="layui-icon">&#xe618;</i>
+        </a>
+        {% end %}
+    </td>
+    {% end %}
+  </tr>
+  {% end %}
+{% end %}
+
+{% block script %}
+{% end %}

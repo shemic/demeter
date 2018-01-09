@@ -4,12 +4,13 @@
     name:site.py 站点相关
     author:rabin
 """
+from __load__ import *
 
 class site_path(Load):
 	@Web.auth
 	@Web.setting
 	def get(self):
-		self.common(
+		self.set(
 			name = u'站点管理'
 			,path = '/site/site'
 			,width = '600'
@@ -23,7 +24,7 @@ class site_path(Load):
 			{'name':'抢购商品管理', 'url':'/site/product'}
 			,
 			)
-		self.commonList('site')
+		self.list('site')
 		if self.data['list']:
 			for key, value in enumerate(self.data['list']):
 				id = str(value['id'])
@@ -31,33 +32,33 @@ class site_path(Load):
 				self.data['list'][key]['func'] = ''
 				for i in menu:
 					self.data['list'][key]['func'] = self.data['list'][key]['func'] + '<a href="'+i['url']+''+param+'">'+i['name']+'</a>&nbsp;&nbsp;&nbsp;&nbsp;'
-		self.commonView('list')
+		self.show('list')
 
 class site_update_path(Load):
 	@Web.auth
 	@Web.setting
 	def get(self):
-		self.common(
+		self.set(
 			path = '/site/site'
 			,label = (u'站点名称',u'站点网址',u'登录页链接',u'登录账号',u'登录密码')
 			,update = ('name-input-required','link-input-required','login_link-input-required','username-input-required','password-password-required')
 		)
-		self.commonOne('site')
-		self.commonView('update')
+		self.one('site')
+		self.show('update')
 	@Web.auth
 	@Web.setting
 	def post(self):
-		self.commonUpdate('site')
+		self.update('site')
 	@Web.auth
 	@Web.setting
 	def delete(self):
-		self.commonDelete('site')
+		self.delete('site')
 
 class product_path(Load):
 	@Web.auth
 	@Web.setting
 	def get(self):
-		self.common(
+		self.set(
 			name = u'抢购商品'
 			,path = '/site/product'
 			,width = '600'
@@ -68,7 +69,7 @@ class product_path(Load):
 			,state = True
 		)
 		self.data['common']['search_site_id-select-'] = self.service('common').list('site')
-		self.commonList('product')
+		self.list('product')
 		status = {}
 		status[1] = '待机'
 		status[2] = '入队'
@@ -80,7 +81,7 @@ class product_path(Load):
 				self.data['list'][key]['site'] = site['name']
 				self.data['list'][key]['status'] = '<a href="/site/order?search_product_id-select-='+str(value['id'])+'">'+status[value['status']]+'[查看二维码]</a>'
 
-		self.commonView('list')
+		self.show('list')
 
 class product_update_path(Load):
 	@Web.auth
@@ -89,29 +90,29 @@ class product_update_path(Load):
 		status = [
 			{'id':'1', 'name': '待机-如果之前抢购完成，选择此项可以重新开始抢购'},
 		]
-		self.common(
+		self.set(
 			path = '/site/product'
 			,label = (u'所属站点', u'商品名称', u'商品链接', u'状态控制')
 			,update = ('site_id-select-required', 'name-input-required','link-input-required', 'status-select-required')
 			,update_site_id = self.service('common').list('site')
 			,update_status = status
 		)
-		self.commonOne('product')
-		self.commonView('update')
+		self.one('product')
+		self.show('update')
 	@Web.auth
 	@Web.setting
 	def post(self):
-		self.commonUpdate('product')
+		self.update('product')
 	@Web.auth
 	@Web.setting
 	def delete(self):
-		self.commonDelete('product')
+		self.delete('product')
 
 class order_path(Load):
 	@Web.auth
 	@Web.setting
 	def get(self):
-		self.common(
+		self.set(
 			name = u'商品订单列表'
 			,path = '/site/order'
 			,width = '600'
@@ -124,7 +125,7 @@ class order_path(Load):
 			,state = False
 		)
 		#self.data['common']['search_product_id-select-'] = self.service('common').list('product')
-		self.commonList('order')
+		self.list('order')
 		if self.data['list']:
 			for key, value in enumerate(self.data['list']):
 				product = self.service('common').one('product', id=value['product_id'])
@@ -132,4 +133,4 @@ class order_path(Load):
 				value['pic'] = value['pic'].replace(Demeter.path + 'runtime', '')
 				self.data['list'][key]['pic'] = '<img src="'+value['pic']+'" width="200px" />'
 
-		self.commonView('list')
+		self.show('list')

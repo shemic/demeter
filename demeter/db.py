@@ -54,11 +54,11 @@ class Mysql(object):
 		
 	def __init__(self, config):
 		pymysql = __import__('pymysql')
-		self.connect = pymysql.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'])
+		self.connect = pymysql.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'], charset=config['charset'])
 
 	def get(self):
 		return self.connect
 
 	def create(self, name):
-		sql = 'CREATE DATABASE '+name+' ENCODING = "UTF8"'
+		sql = 'CREATE DATABASE IF NOT EXISTS '+name+' DEFAULT CHARSET utf8 COLLATE utf8_general_ci'
 		return sql

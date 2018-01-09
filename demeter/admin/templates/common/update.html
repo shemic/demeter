@@ -1,0 +1,119 @@
+{% extends "../theme/update.html" %}
+
+{% block action %}{{data['common']['path']}}_update{% end %}
+{% block url %}{{data['common']['path']}}?{{data['common']['argvs']}}{% end %}
+
+{% block form %}
+{% for index,name in enumerate(data['common']['label']) %}
+  {%set value = data['common']['update'][index] %}
+  {%set value = value.split('-') %}
+  {%set length = len(value) %}
+  <div class="layui-form-item {% if value[1] in ('text',)  %}layui-form-text{% end %}">
+      <label for="{{value[0]}}" class="layui-form-label">
+        {% if value[2] or (value[1] == 'password'  and not data['info']) %}<span class="x-red">*</span>{% end %}
+          {{name}}
+      </label>
+      <div class="layui-input-block">
+      {% if value[1] == 'input' %}
+          <input type="text" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+          autocomplete="off" class="layui-input" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}" />
+      {% elif value[1] == 'date' %}
+          <input type="text" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+          autocomplete="off" class="layui-input time" value="{% if data['info'] and value[0] in data['info'] %}{{datetime.datetime.fromtimestamp(data['info'][value[0]]).strftime('%Y-%m-%d %H:%M:%S')}}{% end %}" readonly />
+      {% elif value[1] == 'show' %}
+          <input type="text" lay-verify="{{value[2]}}"
+          autocomplete="off" class="layui-input" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}" readonly />
+      {% elif value[1] == 'password' %}
+          <input type="password" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{% if not data['info'] %}required{% end %}"
+          autocomplete="off" class="layui-input" value="" />
+      {% elif value[1] == 'text' %}
+          <textarea {% if length > 3 %}placeholder="{{value[3]}}"{% end %} class="layui-textarea" id="update_{{value[0]}}" name="update_{{value[0]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}" lay-verify="{{value[2]}}">{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}</textarea>
+      {% elif value[1] == 'editor' %}
+          <textarea {% if length > 3 %}placeholder="{{value[3]}}"{% end %} class="layui-form layui-textarea layui-editor" key="1" id="update_{{value[0]}}" name="update_{{value[0]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}" lay-verify="{{value[2]}}">{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}</textarea>
+      {% elif value[1] == 'pic' %}
+          <div class="site-demo-upbar">
+            <img id="upload_{{value[0]}}_show" width="200" src="{% if data['info'] and value[0] in data['info'] and data['info'][value[0]] %}{{data['info'][value[0]]}}{% end %}" style="{% if  data['info'] and value[0] in data['info'] and data['info'][value[0]] %}display:;{% else %}display:none;{% end %}margin-left:10px;"/>
+            <input type="file" class="layui-upload-file" lay-type="images" name="file" id="upload_{{value[0]}}"/>
+            <input class="layui-input" type="hidden" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}"/>
+          </div>
+      {% elif value[1] == 'switch' %}
+          <input class="layui-input" type="checkbox" lay-skin="switch" lay-text="{{value[3]}}" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+          autocomplete="off" class="layui-input" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% else %}True{% end %}" />
+      {% elif value[1] == 'radio' %}
+          {%set option = 'update_' + value[0] %}
+          {% if option in data['common'] %}
+          {%set select = data['common'][option] %}
+            {% for v in select %}
+            <input {% if length > 3 %}parent="{% if value[3] in v %}{{v[value[3]]}}{% end %}"{% end %} class="layui-input" type="radio" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+            autocomplete="off" class="layui-input" value="{{v['id']}}" title="{{v['name']}}" {% if data['info'] and value[0] in data['info'] and data['info'][value[0]] == v['id'] %}checked{% end %}/>
+            {% end %}
+          {% end %}
+
+      {% elif value[1] == 'checkbox' %}
+          {%set option = 'update_' + value[0] %}
+          {% if option in data['common'] %}
+          {%set select = data['common'][option] %}
+            {% for v in select %}
+            <input {% if length > 3 %}parent="{% if value[3] in v %}{{v[value[3]]}}{% end %}"{% end %} class="layui-input" type="checkbox" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+            autocomplete="off" class="layui-input" value="{{v['id']}}" title="{{v['name']}}" {% if data['info'] and value[0] in data['info'] and data['info'][value[0]] and v['id'] and str(v['id'])+',' in data['info'][value[0]]+',' %}checked{% end %}/>
+            {% end %}
+          {% end %}
+
+      {% elif value[1] == 'checkboxs' %}
+          {%set option = 'update_' + value[0] %}
+          {% if option in data['common'] %}
+          {%set select = data['common'][option] %}
+            {% for v in select %}
+            
+            <div class="site-demo-upbar">
+            <label for="{{value[0]}}" class="layui-form-label">
+              {{v['name']}}
+            </label>
+            {% if v['child'] %}
+            {% for m in v['child'] %}
+            <input class="layui-input" type="checkbox" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+            autocomplete="off" class="layui-input" value="{{m['id']}}" title="{{m['name']}}" {% if data['info'] and value[0] in data['info'] and data['info'][value[0]] and m['id'] and str(m['id'])+',' in data['info'][value[0]]+',' %}checked{% end %}/>
+            {% end %}
+            {% end %}
+            </div>
+            {% end %}
+          {% end %}
+
+      {% elif value[1] == 'checkmenu' %}
+          {%set option = 'update_' + value[0] %}
+          {% if option in data['common'] %}
+          {%set select = data['common'][option] %}
+            {% for i,j in enumerate(select[0][0]) %}
+            
+            <div class="site-demo-upbar">
+            <label for="{{value[0]}}" class="layui-form-label">
+              {{j}}
+            </label>
+            {% for m,n in enumerate(select[1][i][1]) %}
+            {%set v = select[1][i][0][m] %}
+            <input class="layui-input" type="checkbox" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
+            autocomplete="off" class="layui-input" value="{{n}}" title="{{v}}" {% if data['info'] and value[0] in data['info'] and data['info'][value[0]] and n and str(n)+',' in data['info'][value[0]]+',' %}checked{% end %}/>
+            {% end %}
+            </div>
+            {% end %}
+          {% end %}
+
+      {% elif value[1] == 'select' %}
+        {%set option = 'update_' + value[0] %}
+        {% if option in data['common'] %}
+        {%set select = data['common'][option] %}
+          <select class="layui-select selectLoad" name="update_{{value[0]}}" id="update_{{value[0]}}" lay-verify="{{value[2]}}" lay-search="" {% if length > 3 and value[3] %} change="{{value[3]}}" lay-filter="yes"{% end %}>
+                <option value="">请选择</option>
+            {% for v in select %}
+                <option value="{{v['id']}}" {% if length > 4 and value[4] %}parent="{% if value[4] in v %}{{v[value[4]]}}{% end %}"{% end %} name="{{v['name']}}" {% if data['info'] and value[0] in data['info'] and data['info'][value[0]] == v['id'] %}selected{% end %}>{{v['name']}}</option>
+                {% end %}
+            </select>
+            {% end %}
+      {% end %}
+      </div>
+  </div>
+{% end %}
+{% end %}
+
+{% block script %}
+{% end %}

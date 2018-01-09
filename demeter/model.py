@@ -29,18 +29,53 @@ class Model(object):
 	def cur(self):
 		return self.db.cursor()
 
-	def query(self, sql, method='select', fetch='fetchall'):
+	def commit(self):
+		return self.db.commit()
+
+	def lastId(self, cur):
+		if hasattr(cur, 'lastrowid'):
+			id = cur.lastrowid
+		else:
+			id = cur.fetchone()[0]
+		return id
+
+	def query(self, sql, bind=[], fetch='fetchone', method='', cur=False):
+		if not cur:
+			cur = self.cur()
+		if not method:
+			if 'select' in sql:
+				method = 'select'
+			if 'insert' in sql:
+				method = 'insert'
+
+		cur.execute(sql, bind)
+		if method == 'select':
+			return self.fetch(cur, fetch)
+		id = True
+		if method == 'insert':
+			id = self.lastId(cur)
+		self.commit()
+		self._set = {}
+		return id
+
+	def execute(self, sql, method='select', fetch='fetchall'):
 		cur = self.cur()
 		bind = []
+		state_true = True
+		state_false = False
+		if self._type == 'mysql':
+			state_true = '1'
+		else:
+			state_false = '2'
 		if self._set:
 			for key in self._set:
 				self.check(key, self._set[key], self._attr[key])
 				if self._set[key] == 'time':
 					self._set[key] = self.time()
 				elif self._set[key] == 'True':
-					self._set[key] = True
+					self._set[key] = state_true
 				elif self._set[key] == 'False':
-					self._set[key] = False
+					self._set[key] = state_false
 				elif 'date' in key and type(self._set[key]) != int:
 					self._set[key] = self.mktime(self._set[key])
 				elif self._attr[key].md5:
@@ -64,25 +99,12 @@ class Model(object):
 			cur.execute(totalSql, bind)
 			Demeter.config['page']['totalNum'] = self.fetch(cur, 'fetchone', 'count')
 			Demeter.config['page']['total'] = int(math.ceil(round(float(Demeter.config['page']['totalNum'])/float(Demeter.config['page']['num']),2)))
-		cur.execute(sql, bind)
-		if method == 'select':
-			return self.fetch(cur, fetch)
-		id = True
-		if method == 'insert':
-			id = cur.fetchone()[0]
-		self.db.commit()
-		self._set = {}
-		return id
-		"""
-		try:
-			
-		except Exception, e:
-			print e.message
-			os._exit(0)
-		"""
+		return self.query(sql, bind, fetch=fetch, method=method, cur=cur)
 
+	def fetchAll(self):
+		return self.fetch(self.cur(), type='fetchall')
 
-	def fetch(self, cur, type, method = ''):
+	def fetch(self, cur, type='fetchall', method = ''):
 		load = getattr(cur, type)
 		rows = load()
 		desc = self._key
@@ -152,7 +174,7 @@ class Model(object):
 					if insert and self._attr[field].md5:
 						val = self.createMd5(val)
 					if self._attr[field].type == 'boolean' and isinstance(val, (str, unicode)):
-						val = Demeter.bool(val)
+						val = Demeter.bool(val, self._type)
 					if type(val) == list:
 						val = tuple(val)
 					self._bind[field] = val
@@ -261,7 +283,7 @@ class Model(object):
 		if type == 'fetchone':
 			limit = '0,1'
 		load = getattr(Sql(self._type), method)
-		return self.query(load(self._table, {'key':self._key, 'fields':self._attr, 'col':col, 'order':order, 'group':group, 'limit':limit, 'page':page, 'set':set, 'table_comment':self.__comment__}), method, type)
+		return self.execute(load(self._table, {'key':self._key, 'fields':self._attr, 'col':col, 'order':order, 'group':group, 'limit':limit, 'page':page, 'set':set, 'table_comment':self.__comment__}), method, type)
 
 
 class Fields(object):
@@ -483,6 +505,8 @@ class Sql(object):
 			fields.append(key)
 			if val.autoIncrement and self.type == 'postgresql':
 				fields.append('SERIAL')
+			elif self.type == 'mysql' and val.type == 'boolean':
+				fields.append('int')
 			else:
 				fields.append(val.type)
 
@@ -506,6 +530,8 @@ class Sql(object):
 				if '.' in val.default:
 					temp = val.default.split('.')
 					default = Demeter.config[temp[0]][temp[1]]
+				if self.type == 'mysql' and val.type == 'boolean':
+					default = Demeter.bool(default, self.type)
 				fields.append('DEFAULT \'' + str(default) + '\'')
 
 			if val.comment:

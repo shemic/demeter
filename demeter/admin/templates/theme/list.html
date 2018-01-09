@@ -1,0 +1,289 @@
+{% if data['page']['ajax'] == False %}
+<!DOCTYPE html>
+<html>
+    <head>
+        {%include '../inc/header.html'%}
+        <style>
+        .layui-form-switch
+        {
+            margin-top: 0px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="x-nav">
+            <span class="layui-breadcrumb">
+                {% block breadcrumb %}
+                    <a><cite>首页</cite></a>
+                    <a><cite><script>document.write(parent.config.parentTitle)</script></cite></a>
+                    <a><cite><script>document.write(parent.config.subTitle)</script></cite></a>
+                    {% if data['state'] != True %}
+                    <a><cite>回收站</cite></a>
+                    {% end %}
+                {% end %}
+            </span>
+            <span id="currentUrl"><script>var cur = parent.config.cur;</script></span>
+            <a class="layui-btn layui-btn-small" style="margin-top:3px;float:right"  href="javascript:window.history.back();" title="返回"><i class="layui-icon">&#xe619;</i></a>
+        </div>
+        <div class="x-body">
+            <form class="layui-form x-center" action="" style="width:auto">
+                <div class="layui-form-pane" style="margin-top: 15px;">
+                  <div class="layui-form-item">
+                   {% block search %}
+                    <label class="layui-form-label">日期范围</label>
+                    <div class="layui-input-inline">
+                      <input class="layui-input" placeholder="开始时间" id="LAY_demorange_s" name="search_start">
+                    </div>
+                    <div class="layui-input-inline">
+                      <input class="layui-input" placeholder="截止时间" id="LAY_demorange_e" name="search_end">
+                    </div>
+                    <div class="layui-input-inline">
+                      <input type="text" name="search_name"  placeholder="标题" autocomplete="off" class="layui-input">
+                    </div>
+                    {% end %}
+                    <div class="layui-input-inline" style="width:80px">
+                        <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                    </div>
+                  </div>
+                </div> 
+            </form>
+            <xblock>{% block button %}<button class="layui-btn" onclick="show('添加问题','question-add.html','600','500')"><i class="layui-icon">&#xe608;</i>添加</button><button class="layui-btn layui-btn-danger" onclick="showDel('')"><i class="layui-icon"></i>回收站</button>{% end %}<span class="x-right" style="line-height:40px">{% block total %}共有数据：{{data['page']['totalNum']}} 条 [每页数据：{{data['page']['num']}} 条{% end %}]</span></xblock>
+
+            <form class="layui-form">
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        {% block thead %}
+                        <th>
+                            <input type="checkbox" name="" value="">
+                        </th>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            标题
+                        </th>
+                        <th>
+                            分类
+                        </th>
+                        <th>
+                            来源
+                        </th>
+                        <th>
+                            更新时间
+                        </th>
+                        <th>
+                            浏览次数
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                        {% end %}
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                {% end %}
+                {% block tbody %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" value="1" name="">
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            <u style="cursor:pointer" onclick="question_show()">
+                                问题标题
+                            </u>
+                        </td>
+                        <td >
+                            新闻子类1
+                        </td>
+                        <td >
+                            xuebingsi
+                        </td>
+                        <td >
+                            2017-01-01 11:11:42
+                        </td>
+                        <td >
+                            34
+                        </td>
+                        <td class="td-manage">
+                            <a title="编辑" href="javascript:;" onclick="question_edit('编辑','question-edit.html','4','','510')"
+                            class="ml-5" style="text-decoration:none">
+                                <i class="layui-icon">&#xe642;</i>
+                            </a>
+                            <a title="删除" href="javascript:;" onclick="question_del(this,'1')" 
+                            style="text-decoration:none">
+                                <i class="layui-icon">&#xe640;</i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% end %}
+                    <script>var current = {{data['page']['current']}}</script>
+                    {% if data['page']['ajax'] == False %}
+                
+                </tbody>
+            </table>
+            </form>
+            <div id="page"></div>
+        </div>
+        {%include '../inc/footer.html'%}
+        {%include '../inc/script.html'%}
+        
+<script>
+layui.use(['laydate','element','laypage','layer', 'form'], function(){
+$ = layui.jquery;//jquery
+var lement = layui.element();//面包导航
+var laypage = layui.laypage;//分页
+var layer = layui.layer;//弹出层
+var form = layui.form();
+layer.ready(function(){ //为了layer.ext.js加载完毕再执行
+  layer.photos({
+    photos: '#tbody'
+    //,shift: 5 //0-6的选择，指定弹出图片动画类型，默认随机
+  });
+}); 
+if ($('.load').length) {
+    $('.load').each(function()
+    {
+        load($(this))
+    })
+}
+
+if ($(".selectLoad").length) {
+    $(".selectLoad").each(function()
+    {
+        if ($(this).attr('lay-filter')) {
+            var e = $(this);
+            selectShow(e, e.attr('change'),'search');
+            form.render();
+        }
+    })
+}
+
+form.on('select(yes)', function(data){
+  var e = $(data.elem);
+  selectShow(e, e.attr('change'), 'search');
+  form.render();
+}); 
+
+form.on('switch(switch)', function(data){
+  //console.log(data.elem); //得到checkbox原始DOM对象
+  //console.log(data.elem.checked); //开关是否开启，true或者false
+  //console.log(data.value); //开关value值，也可以通过data.elem.value得到
+  //console.log(data.othis); //得到美化后的DOM对象
+  var e = $(data.elem)
+  var id = e.attr('data-id')
+  var value = e.attr('data-value')
+  var send = {
+    id : id
+    ,value:value
+  }
+  var url = e.attr('data-url')
+  var index = layer.msg('loading...', {icon: 4});
+  request('post', url, send, function(msg)
+  {
+    layer.close(index);
+  })
+});
+
+if ($('.time').length) {
+    laydate = layui.laydate;//日期插件
+    var start = {
+        //min: laydate.now()
+        max: '2099-06-16 23:59:59'
+        ,format: 'YYYY-MM-DD hh:mm:ss'
+        ,istoday: true
+        ,istime: true
+        ,choose: function(datas){
+          end.min = datas; //开始日选好后，重置结束日的最小日期
+          end.start = datas //将结束日的初始值设定为开始日
+        }
+    };
+
+    var end = {
+        //min: laydate.now()
+        max: '2099-06-16 23:59:59'
+        ,format: 'YYYY-MM-DD hh:mm:ss'
+        ,istoday: true
+        ,istime: true
+        ,choose: function(datas){
+          start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
+    $('.time').each(function()
+    {
+        type = $(this).attr('id').indexOf('start')
+        $(this).click(function()
+        {
+            if (type > -1) {
+                start.elem = this;
+                laydate(start);
+            } else {
+                end.elem = this
+                laydate(end);
+            }
+        })
+    })
+}
+laypage({
+  cont: 'page'
+  ,pages: {{data['page']['total']}}
+  ,curr: current
+  ,first: 1
+  ,last: {{data['page']['total']}}
+  ,prev: '<em><</em>'
+  ,next: '<em>></em>'
+  ,skip: true
+  ,jump: function(obj, first) {
+    var curr = obj.curr;
+    var url = location.href;
+    var str = 'page='
+    var link = '?'
+    var page = 1
+    if (url.indexOf(str) > -1) {
+        var temp = url.split('page=')
+        url = temp[0]
+        page = temp[1]
+        if (page.indexOf('&') > -1) {
+            temp = page.split('&')
+            page = temp[0]
+            if (url.indexOf('?') > -1) {
+                link = '&'
+            }
+            if (temp[1]) {
+                url = url + link + temp[1]
+            }
+        }
+    }
+    if (url.indexOf('?') > -1) {
+        link = '&'
+    } else {
+        link = '?'
+    }
+
+    url = url + link;
+    url = url.replace('&&', '&')
+    
+    if (curr != current) {
+      url = url + 'page=' + curr
+      var index = layer.msg('loading...', {icon: 4});
+      request('get', url, {}, function(msg)
+      {
+        layer.close(index);
+        $('#tbody').html(msg);
+        form.render();
+      })
+    }
+  }
+});
+  {% block script %}
+  {% end %}
+});
+
+    
+    </script>
+    </body>
+</html>
+{% end %}

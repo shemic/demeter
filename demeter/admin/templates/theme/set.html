@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {%include '../inc/header.html'%}
+        <link rel="stylesheet" type="text/css" href="{{static_url('lib/simditor/styles/simditor.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{static_url('lib/simditor/plugins/html/simditor-html.css')}}">
+    </head>
+    <body>
+        <div class="x-nav">
+            <span class="layui-breadcrumb">
+                {% block breadcrumb %}
+                    <a><cite>首页</cite></a>
+                    <a><cite><script>document.write(parent.config.parentTitle)</script></cite></a>
+                    <a><cite><script>document.write(parent.config.subTitle)</script></cite></a>
+                {% end %}
+            </span>
+            <span id="currentUrl"><script>var cur = parent.config.cur;</script></span>
+            <a class="layui-btn layui-btn-small" style="margin-top:3px;float:right"  href="javascript:window.history.back();" title="返回"><i class="layui-icon">&#xe619;</i></a>
+        </div>
+        <div class="x-body">
+            <div class="layui-tab layui-tab-brief">
+              <div class="layui-tab-content" >
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form layui-form-pane" action="{% block action %}{% end %}" method="post" autocomplete="off" target="f1">
+                        {% module xsrf_form_html() %}
+                        <input type="hidden" name="function" id="function" value="msg"/>
+                        <input type="hidden" name="url" id="url" value="{% block url %}{% end %}" />
+                        <input type="hidden" name="project" id="project" value="ai" />
+                        <input type="hidden" name="table" id="table" value="col" />
+                        <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] > 0 %}{{data['info']['id']}}{% end %}" />
+                        <iframe id="f1" name="f1" style="display:none;"></iframe>
+                        {% block form %}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>网站名称
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="控制在25个字、50个字节以内"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>关键词
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="5个左右,8汉字以内,用英文,隔开"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>描述
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="空制在80个汉字，160个字符以内"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>css、js、images路径配置
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="默认为空，为相对路径"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>上传目录配置
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="默认为uploadfile"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>底部版权信息
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="&copy; 2016 X-admin"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>备案号
+                            </label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" autocomplete="off" placeholder="京ICP备00000000号"
+                                class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">
+                                <span class='x-red'>*</span>统计代码
+                            </label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        {% end %}
+                        <div class="layui-form-item">
+                            <button class="layui-btn" lay-submit lay-filter="update">
+                                保存
+                            </button>
+                        </div>
+                    </form>
+                    <div style="height:100px;"></div>
+                </div>
+              </div>
+            </div>
+        </div>
+        {%include '../inc/footer.html'%}
+        {%include '../inc/script.html'%}
+        <!-- 加载文本编辑器 -->
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/module.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/hotkeys.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/uploader.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/scripts/simditor.min.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/html/beautify-html.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/html/simditor-html.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('lib/simditor/plugins/dropzone/simditor-dropzone.js')}}"></script>
+        <script>
+        layui.use(['laydate', 'form','layer','layedit','upload'], function(){
+            $ = layui.jquery;
+            var form = layui.form()
+            var layer = layui.layer
+            var layedit = layui.layedit;
+
+            if ($('.time').length) {
+                laydate = layui.laydate;//日期插件
+                var date = {
+                    //min: laydate.now()
+                    max: '2099-06-16 23:59:59'
+                    ,format: 'YYYY-MM-DD hh:mm:ss'
+                    ,istoday: true
+                    ,istime: true
+                };
+                $('.time').each(function()
+                {
+                    $(this).click(function()
+                    {
+                        date.elem = this;
+                        laydate(date);
+                    })
+                })
+            }
+
+            var xsrf = getCookie("_xsrf");
+            var uploadUrl = '/upload?_xsrf='+xsrf;
+            initEditor();
+            /*
+            layedit.set({
+              uploadImage: {
+                url: uploadUrl
+                ,type: 'post'
+              }
+            });
+            if ($('.layui-editor').length) {
+                $('.layui-editor').each(function()
+                {
+                    id = $(this).attr('id');
+                    var index = layedit.build(id);
+                    layedit.sync(index)
+                });
+            }
+            */
+            layui.upload({
+                url: uploadUrl
+                ,success: function(res, input){ //上传成功后的回调
+                    var id = $(input).attr('id').replace('upload_', '');
+                    $('#upload_' + id + '_show').attr('src',res.data.src + '?v' + Date.parse(new Date())).show();
+                    $('#update_' + id).val(res.data.src);
+                }
+            });
+            
+
+            {% block script %}
+            {% end %}
+
+            form.on('submit(update)');
+        });
+        </script>
+    </body>
+</html>

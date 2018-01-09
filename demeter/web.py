@@ -93,31 +93,26 @@ class Base(tornado.web.RequestHandler):
 	def model(self, name):
 		return Demeter.model(name)
 
-	def common(self, **kwd):
+	def set(self, **kwd):
 		self.data['common'] = kwd
 		self.data['common']['argvs'] = ''
-		if 'farm' in self.data['setting'] and self.data['setting']['farm'] > 0:
-			farm = str(self.data['setting']['farm'])
-			self.data['common']['argvs'] = '&farm=' + farm + '&search_farm_id-select-=' + farm
 
-	def commonView(self, name):
+	def show(self, name):
 		self.view('common/'+name+'.html')
 
-	def commonList(self, model, order = 'cdate desc'):
+	def list(self, model, order = 'cdate desc'):
 		self.data['state'] = self.input('state', True)
 		self.data['list'] = self.service('common').list(model, state=self.data['state'], search=self.data['search'], page=True, order=order)
 
-	def commonOne(self, model, **kwd):
+	def one(self, model, **kwd):
 		id = self.input('id')
 		self.data['info'] = {}
 		if id:
 			kwd['id'] = id
 		if kwd:
 			self.data['info'] = self.service('common').one(model, **kwd)
-		if not self.data['info'] and 'farm' in self.data['setting'] and self.data['setting']['farm'] > 0:
-			self.data['info']['farm_id'] = self.data['setting']['farm']
 
-	def commonUpdate(self, model, msg='', id=0, **kwd):
+	def update(self, model, msg='', id=0, **kwd):
 		if not self.data['auth']:
 			self.auth()
 		else:
@@ -133,7 +128,7 @@ class Base(tornado.web.RequestHandler):
 			self.out('yes', {'id':state})
 			return state
 
-	def commonDelete(self, model):
+	def delete(self, model):
 		if not self.data['auth']:
 			self.auth()
 		else:
@@ -222,7 +217,7 @@ class Web(object):
 		return callback
 
 	@classmethod
-	def load(self, file, local):
+	def init(self, file, local):
 		path = os.path.split(os.path.realpath(file))[0] + '/'
 		files = self.file(path)
 		url = []
@@ -230,6 +225,10 @@ class Web(object):
 			module = __import__(key, local)
 			url = self.url(module, key, url)
 		Demeter.route = Demeter.route + url
+
+	@classmethod
+	def load(self):
+		pass
 
 	@staticmethod
 	def file(path):
@@ -259,7 +258,8 @@ class Web(object):
 		return url
 	@staticmethod
 	def start():
-		print Demeter.route
+		if 'route' in Demeter.config['setting']:
+			print(Demeter.route)
 		config = Demeter.config[Demeter.web]
 		cookie = False
 		if 'xsrf_cookies' in config:
@@ -281,7 +281,7 @@ class Web(object):
 			handlers.append((r"/upload/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/upload/'}))
 			handlers.append((r"/qrcode/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/qrcode/'}))
 			handlers.append((r"/camera/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/camera/'}))
-			handlers.append((r"/static/(.*)", tornado.web.StaticFileHandler, {"path":"static"}))
+			handlers.append((r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}))
 			handlers.append((r"/(apple-touch-icon\.png)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])))
 			handlers.extend(Demeter.route)
 

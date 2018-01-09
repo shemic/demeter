@@ -2,7 +2,6 @@
 """
     demeter web
     name:admin.py
-    author:rabin
 """
 from demeter.core import *
 

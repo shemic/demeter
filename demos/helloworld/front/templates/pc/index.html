@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+{%include 'inc/header.html'%}
+</head>
+<body>
+<h1>
+pc{% if 'site' in data and data['site'] %}：{{data['site']['name']}}{% end %}
+</h1>
+{% if 'product' in data and data['product'] %}
+<ul>
+	{% for v in data['product'] %}
+    <li><a href="#"><p>{{v['name']}}</p></a></li>
+    {% end %}
+</ul>
+{% end %}
+</body>
+</html>

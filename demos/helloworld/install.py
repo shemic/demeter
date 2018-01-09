@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from demeter.core import *
 
@@ -17,7 +16,7 @@ def manage():
 	model.id = 1
 	info = model.select(type='fetchone')
 	if not info:
-		model.name = '管理员'
+		model.name = u'管理员'
 		model.insert()
 
 manage()
