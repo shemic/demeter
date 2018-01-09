@@ -4,4 +4,4 @@
 框架：gevent+tornado+demeter类库
 
 安装：
-pip git+https://github.com/shemic/demeter
+pip install git+https://github.com/shemic/demeter
