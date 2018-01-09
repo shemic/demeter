@@ -192,17 +192,14 @@ class Demeter(object):
 
 	@classmethod
 	def md5(self, value, salt=False):
-		module = __import__('md5')
-		md5 = getattr(module, 'new')
-		md5_obj = md5()
+		import hashlib
 		if salt:
 			if salt == True:
 				salt = self.rand()
-			md5_obj.update(value + salt)
-			return md5_obj.hexdigest() + '_' + salt
+			value = value + salt
+			return hashlib.md5(value.encode("utf-8")).hexdigest() + '_' + salt
 		else:
-			md5_obj.update(value)
-			return md5_obj.hexdigest()
+			return hashlib.md5(value.encode("utf-8")).hexdigest()
 
 	@staticmethod
 	def rand(length = 4):
