@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 from demeter.web import *
-import page
-Web.start(application=[page,])
+import front.page
+Web.start(application=[front.page,])

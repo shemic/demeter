@@ -6,4 +6,4 @@
 from demeter.core import *
 
 if __name__ == "__main__":
-	Demeter.web('front')
+	Demeter.webInit('front')

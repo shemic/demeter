@@ -3,7 +3,7 @@
     demeter database
     name:manage_log.py
 """
-from __load__ import *
+from .__load__ import *
 
 class Manage_log(Model):
 	__table__ = 'manage_log'

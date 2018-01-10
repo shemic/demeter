@@ -4,7 +4,7 @@
     name:work.py
     author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class index_path(Load):
 	#权限控制，需要在Load类中自行做判断

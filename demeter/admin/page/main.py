@@ -4,7 +4,7 @@
     name:main.py
     author:rabin
 """
-from __load__ import *
+from .__load__ import *
 
 class index_path(Load):
 	@Web.auth

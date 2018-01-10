@@ -4,7 +4,7 @@
     name:upload.py
     author:rabin
 """
-from __load__ import *
+from .__load__ import *
 from datetime import *
 import os
 import uuid

@@ -209,7 +209,7 @@ class Demeter(object):
 			return True
 
 	@classmethod
-	def web(self, name):
+	def webInit(self, name):
 		self.web = name
 		self.webPath = self.path + self.web + '/'
 		if self.web == 'admin':
