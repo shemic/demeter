@@ -3,7 +3,7 @@
     demeter database
     name:product.py
 """
-from .__load__ import *
+from __load__ import *
 
 class Product(Model):
 	__table__ = 'product'
