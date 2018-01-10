@@ -23,10 +23,10 @@ class Model(object):
 		self._bind = {}
 		self._attr = {}
 		self._key = {}
-		self.setTable(__table__)
+		self.setTable(self.__table__)
 		self.create()
 
-	def setTable(name):
+	def setTable(self, name):
 		if 'prefix' in self._config and self._config['prefix']:
 			self._table = self._config['prefix'] + '_' + name
 		else:
