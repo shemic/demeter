@@ -129,6 +129,12 @@ class Demeter(object):
 			self.serviceObj[name] = service()
 		return self.serviceObj[name]
 		"""
+	@classmethod
+	def adminModel(self, table):
+		config = ('manage_admin', 'manage_log', 'manage_role')
+		if table in config:
+			return self.getClass(table, 'demeter.admin.model.')
+		return False
 
 	@classmethod
 	def model(self, table, name='rdb'):
@@ -137,7 +143,9 @@ class Demeter(object):
 		obj = self.getObject('db', 'demeter.')
 		db = getattr(obj, name.capitalize())
 		connect = db(config).get()
-		model = self.getClass(table, 'model.')
+		model = self.adminModel(table)
+		if not model:
+			model = self.getClass(table, 'model.')
 		return model(name, connect, config)
 		"""
 		if table not in self.modelObj:
