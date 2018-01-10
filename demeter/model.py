@@ -19,12 +19,18 @@ class Model(object):
 		self.db = db
 		self._type = type
 		self._config = config
-		self._table = self._config['prefix'] + '_' + self.__table__
 		self._set = ''
 		self._bind = {}
 		self._attr = {}
 		self._key = {}
+		self.setTable(__table__)
 		self.create()
+
+	def setTable(name):
+		if 'prefix' in self._config and self._config['prefix']:
+			self._table = self._config['prefix'] + '_' + name
+		else:
+			self._table = name
 
 	def cur(self):
 		return self.db.cursor()
