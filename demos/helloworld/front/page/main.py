@@ -26,8 +26,10 @@ class select_path(Load):
 
 		product = Demeter.model('product')
 		product.site_id = id
-		self.data['product'] = product.select(col = '*', order = 'cdate desc', group = '', limit = '0,100')
-
+		self.data['product'] = product.select(col = '*', order = 'cda2te desc', group = '', limit = '0,100')
+		Demeter.echo(product.sql)
+		Demeter.echo(product.bind)
+		Demeter.echo(product.log)
 		self.view('index.html')
 
 # 测试数据库 更新和插入 /main/update
