@@ -82,7 +82,8 @@ class Model(object):
 				id = self.lastId(cur)
 			self.commit()
 		except Exception as e:
-			return False
+			self.addLog(str(e))
+			return e
 		self._set = {}
 		return id
 
