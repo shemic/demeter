@@ -83,7 +83,7 @@ class Model(object):
 			self.commit()
 		except Exception as e:
 			self.addLog(str(e))
-			return e
+			return False
 		self._set = {}
 		return id
 
