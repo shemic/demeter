@@ -274,7 +274,7 @@ class Web(object):
 		config = Demeter.config[Demeter.web]
 		cookie = False
 		if 'tornado' not in Demeter.config:
-			Demeter.config = {}
+			Demeter.config['tornado'] = {}
 		if 'xsrf_cookies' in config:
 			cookie = Demeter.bool(config['xsrf_cookies'])
 		settings = dict({
