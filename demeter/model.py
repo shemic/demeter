@@ -11,6 +11,7 @@ import json
 import traceback
 import re
 import math
+import datetime
 from demeter.core import *
 class Model(object):
 	__table__ = ''
@@ -23,6 +24,10 @@ class Model(object):
 		self._bind = {}
 		self._attr = {}
 		self._key = {}
+		self.call = False
+		self.log = []
+		self.sql = False
+		self.bind = False
 		self.setTable(self.__table__)
 		self.create()
 
@@ -31,6 +36,16 @@ class Model(object):
 			self._table = self._config['prefix'] + '_' + name
 		else:
 			self._table = name
+
+	def setCall(self, call):
+		self.call = call
+		return self
+
+	def addLog(self, value):
+		self.log.append(value)
+
+	def getLog(self):
+		return self.log
 
 	def cur(self):
 		return self.db.cursor()
@@ -45,7 +60,9 @@ class Model(object):
 			id = cur.fetchone()[0]
 		return id
 
-	def query(self, sql, bind=[], fetch='fetchone', method='', cur=False):
+	def query(self, sql, bind=[], fetch='fetchone', method='', cur=False, call=False):
+		if call:
+			self.setCall(call)
 		if not cur:
 			cur = self.cur()
 		if not method:
@@ -53,7 +70,8 @@ class Model(object):
 				method = 'select'
 			if 'insert' in sql:
 				method = 'insert'
-
+		self.sql = sql
+		self.bind = bind
 		cur.execute(sql, bind)
 		if method == 'select':
 			return self.fetch(cur, fetch)
@@ -128,7 +146,7 @@ class Model(object):
 					row = {}
 					i = 0
 					for v in key:
-						row[desc[i][0]] = v
+						row[desc[i][0]] = self.data(desc[i][0], v)
 						i = i + 1
 					result.append(row)
 		elif method == 'count':
@@ -137,12 +155,19 @@ class Model(object):
 			result = {}
 			i = 0
 			if rows:
-				for key in rows:
-					if not key:
-						key = ''
-					result[desc[i][0]] = key
+				for v in rows:
+					if not v:
+						v = ''
+					result[desc[i][0]] = self.data(desc[i][0], v)
 					i = i + 1
 		return result
+
+	def data(self, key, value):
+		if type(value) == datetime.datetime:
+			value = str(value)
+		if self.call:
+			value = self.call(key, value)
+		return value
 
 	def attr(self, method):
 		fields = vars(self.__class__)
@@ -276,7 +301,9 @@ class Model(object):
 	def delete(self):
 		return self.handle('delete')
 
-	def select(self, type='fetchall',col = '*', order = 'cdate desc', group = '', limit = '0,100', page=False):
+	def select(self, type='fetchall',col = '*', order = 'cdate desc', group = '', limit = '0,100', page=False, call=False):
+		if call:
+			self.setCall(call)
 		pageConfig = {}
 		if page and 'page' in Demeter.config:
 			pageConfig['current'] = Demeter.config['page']['current']
