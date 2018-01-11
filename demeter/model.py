@@ -72,13 +72,17 @@ class Model(object):
 				method = 'insert'
 		self.sql = sql
 		self.bind = bind
-		cur.execute(sql, bind)
-		if method == 'select':
-			return self.fetch(cur, fetch)
-		id = True
-		if method == 'insert':
-			id = self.lastId(cur)
-		self.commit()
+		self.addLog((sql, bind))
+		try:
+			cur.execute(sql, bind)
+			if method == 'select':
+				return self.fetch(cur, fetch)
+			id = True
+			if method == 'insert':
+				id = self.lastId(cur)
+			self.commit()
+		except Exception as e:
+			return False
 		self._set = {}
 		return id
 
