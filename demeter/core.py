@@ -83,13 +83,6 @@ class Demeter(object):
 		return result
 
 	@classmethod
-	"""
-	param = {}
-	param['action'] = 'a'
-	param['name'] = 'n'
-	param['param'] = 'p'
-	Demeter.getopt(param)
-	"""
 	def getopt(self, param = {}):
 		import getopt
 		param['help'] = 'h'
