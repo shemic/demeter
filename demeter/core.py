@@ -9,7 +9,6 @@ import os
 import signal
 import re
 import sys
-import getopt
 import json
 import subprocess
 import importlib
@@ -17,8 +16,7 @@ class Demeter(object):
 	path = ''
 	root = ''
 	config = {}
-	serviceObj = {}
-	modelObj = {}
+	option = {}
 	web = ''
 	request = False
 	route = []
@@ -85,6 +83,46 @@ class Demeter(object):
 		return result
 
 	@classmethod
+	"""
+	param = {}
+	param['action'] = 'a'
+	param['name'] = 'n'
+	param['param'] = 'p'
+	Demeter.getopt(param)
+	"""
+	def getopt(self, param = {}):
+		import getopt
+		param['help'] = 'h'
+		shortopts = ''
+		longopts  = []
+		check = []
+		for k,v in param.items():
+			if k == 'help':
+				shortopts = shortopts + v
+			else:
+				shortopts = shortopts + v + ':'
+			longopts.append(k)
+		try:
+			options, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
+			for name, value in options:
+				for k,v in param.items():
+					if name in ('-' + v, '--' + k):
+						if k == 'help':
+							self.usage()
+						else:
+							self.option[k] = value
+		except getopt.GetoptError:
+			self.usage()
+
+	@classmethod
+	def usage(self, name = 'usage'):
+		file = self.path + name
+		if not File.exists(file):
+			file = self.root + name
+		print File.read(file)
+		sys.exit()
+
+	@classmethod
 	def temp(self, key='', name='', value=''):
 		temp = Demeter.path + 'conf/temp.conf'
 		if File.exists(temp):
@@ -119,16 +157,7 @@ class Demeter(object):
 			name = 'service'
 		service = self.getClass(name, path)
 		return service()
-		"""
-		if name not in self.serviceObj:
-			path = 'service.'
-			if name == 'common':
-				path = 'demeter.'
-				name = 'service'
-			service = self.getClass(name, path)
-			self.serviceObj[name] = service()
-		return self.serviceObj[name]
-		"""
+
 	@classmethod
 	def adminModel(self, table):
 		config = ('manage_admin', 'manage_log', 'manage_role')
@@ -147,17 +176,6 @@ class Demeter(object):
 		if not model:
 			model = self.getClass(table, 'model.')
 		return model(name, connect, config)
-		"""
-		if table not in self.modelObj:
-			name = self.config['db'][name]
-			config = self.config[name]
-			obj = self.getObject('db', 'demeter.')
-			db = getattr(obj, name.capitalize())
-			connect = db(config).get()
-			model = self.getClass(table, 'model.')
-			self.modelObj[table] =  model(name, connect, config)
-		return self.modelObj[table]
-		"""
 
 	@classmethod
 	def getMethod(self, module):
@@ -332,7 +350,7 @@ class File(object):
 		Shell.popen('chmod +x ' + file)
 
 	@staticmethod
-	def read(path, name):
+	def read(path, name = ''):
 		handle = open(path + name, 'r')
 		content = handle.read()
 		handle.close()

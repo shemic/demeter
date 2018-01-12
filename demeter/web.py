@@ -290,7 +290,7 @@ class Web(object):
 			"process": int(config['process'])
 		}, **Demeter.config['tornado'])
 
-		com = ('cookie_secret', 'login_url')
+		com = ('cookie_secret', 'login_url', 'static_path', 'template_path')
 		for v in com:
 			if v in config:
 				settings[v] = config[v]
