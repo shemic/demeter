@@ -316,11 +316,14 @@ class Demeter(object):
 		return value
 
 	@classmethod
-	def curl(self, url):
-		import urllib2
-		req = urllib2.Request(url)
-		response = urllib2.urlopen(req)
-		return response.read()
+	def curl(self, url = '', param={}, method = 'get', **kwargs):
+		import requests
+		if method == 'get':
+			req = requests.get(url, params=param, kwargs)
+		else:
+			req = requests.post(url, params=param, kwargs)
+		result = req.text
+		return result
 
 	@classmethod
 	def error(self, string):
