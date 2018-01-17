@@ -112,7 +112,7 @@ class Demeter(object):
 		file = self.path + name
 		if not File.exists(file):
 			file = self.root + name
-		print File.read(file)
+		self.echo(File.read(file))
 		sys.exit()
 
 	@classmethod
