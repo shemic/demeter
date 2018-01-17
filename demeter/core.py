@@ -316,12 +316,12 @@ class Demeter(object):
 		return value
 
 	@classmethod
-	def curl(self, url = '', param={}, method = 'get', **kwargs):
+	def curl(self, url = '', param={}, method = 'get'):
 		import requests
 		if method == 'get':
-			req = requests.get(url, params=param, kwargs)
+			req = requests.get(url, params=param)
 		else:
-			req = requests.post(url, params=param, kwargs)
+			req = requests.post(url, params=param)
 		result = req.text
 		return result
 
