@@ -172,6 +172,8 @@ class Model(object):
 			value = str(value)
 		if self.call:
 			value = self.call(key, value)
+		if value == None or not value:
+			value = ''
 		return value
 
 	def attr(self, method):

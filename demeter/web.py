@@ -210,7 +210,8 @@ class Web(object):
 				result = method(self, *args, **kwargs)
 				return result
 			except Exception as e:
-				Demeter.echo(e)
+				import traceback
+				tracebak.print_exc()
 				try:
 					return self.view('404.html')
 				except Exception as e:
