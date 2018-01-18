@@ -211,7 +211,7 @@ class Web(object):
 				return result
 			except Exception as e:
 				import traceback
-				tracebak.print_exc()
+				traceback.print_exc()
 				try:
 					return self.view('404.html')
 				except Exception as e:
