@@ -52,7 +52,7 @@ class site_update_path(Load):
 	@Web.auth
 	@Web.setting
 	def delete(self):
-		self.delete('site')
+		self.drop('site')
 
 class product_path(Load):
 	@Web.auth
@@ -106,7 +106,7 @@ class product_update_path(Load):
 	@Web.auth
 	@Web.setting
 	def delete(self):
-		self.delete('product')
+		self.drop('product')
 
 class order_path(Load):
 	@Web.auth

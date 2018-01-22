@@ -84,7 +84,7 @@ class role_update_path(Load):
 	@Web.auth
 	@Web.setting
 	def delete(self):
-		self.delete('manage_role')
+		self.drop('manage_role')
 
 class log_path(Load):
 	@Web.auth

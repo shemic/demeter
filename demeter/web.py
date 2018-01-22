@@ -128,7 +128,7 @@ class Base(tornado.web.RequestHandler):
 			self.out('yes', {'id':state})
 			return state
 
-	def delete(self, model):
+	def drop(self, model):
 		if not self.data['auth']:
 			self.auth()
 		else:
