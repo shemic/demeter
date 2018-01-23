@@ -629,7 +629,7 @@ class Sql(object):
 			val = args['fields'][key].getBind()
 			if val:
 				values.append(val)
-				fields.append(key)
+				fields.append('`' + key + '`')
 
 		fields = ','.join(fields)
 		values = ','.join(values)
@@ -641,7 +641,7 @@ class Sql(object):
 	def update(self, table, args):
 		fields = []
 		for key in args['set']:
-			fields.append(key + ' = %s')
+			fields.append('`' + key + '` = %s')
 
 		fields = ','.join(fields)
 		sql = 'UPDATE ' + table + ' SET ' + fields + self.where(args['key'], args['fields'])
@@ -697,7 +697,7 @@ class Sql(object):
 				logic = ''
 			else:
 				logic = ' ' + logic
-			result = logic + ' ' + key + ' ' + exp + ' ' + str(val)
+			result = logic + ' `' + key + '` ' + exp + ' ' + str(val)
 		return result
 
 	def order(self, value):
