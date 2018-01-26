@@ -361,11 +361,51 @@ class Fields(object):
 		self.manage = manage
 
 
-	def assgin(self, value, exp='=', logic='and'):
+	# set value
+	def assign(self, value, exp='=', logic='and'):
 		self.add(value)
 		self.exp(exp)
 		self.logic(logic)
 		return self
+
+	def ins(self, value):
+		self.argv = value
+		self.exp('in')
+		return self
+
+	def nq(self, value):
+		self.argv = value
+		self.exp('!=')
+		return self
+
+	def like(self, value):
+		self.argv = '%' + value + '%'
+		self.exp('like')
+		return self
+
+	def mlike(self, value):
+		self.argv = value
+		self.exp('~')
+		self.logic('and')
+		return self
+
+	def time(self, value):
+		self.add(Demeter.mktime(value))
+		return self
+
+	def start(self, value):
+		self.time(value)
+		self.exp('>=')
+		self.logic('and')
+		return self
+
+	def end(self, value):
+		self.time(value)
+		self.exp('<=')
+		self.logic('and')
+		return self
+
+
 
 	def bind(self, value):
 		self.bindValue = value
@@ -454,43 +494,6 @@ class Fields(object):
 		self.argv.append(value)
 		"""
 		self.argv = value
-		return self
-
-	def ins(self, value):
-		self.argv = value
-		self.exp('in')
-		return self
-
-	def nq(self, value):
-		self.argv = value
-		self.exp('!=')
-		return self
-
-	def like(self, value):
-		self.argv = '%' + value + '%'
-		self.exp('like')
-		return self
-
-	def mlike(self, value):
-		self.argv = value
-		self.exp('~')
-		self.logic('and')
-		return self
-
-	def time(self, value):
-		self.add(Demeter.mktime(value))
-		return self
-
-	def start(self, value):
-		self.time(value)
-		self.exp('>=')
-		self.logic('and')
-		return self
-
-	def end(self, value):
-		self.time(value)
-		self.exp('<=')
-		self.logic('and')
 		return self
 
 class Counter(object):
