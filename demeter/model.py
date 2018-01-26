@@ -696,7 +696,7 @@ class Sql(object):
 				logic = ''
 			else:
 				logic = ' ' + logic
-			result = logic + ' ' + key + ' ' + exp + ' ' + str(val)
+			result = logic + ' `' + key + '` ' + exp + ' ' + str(val)
 		return result
 
 	def order(self, value):
