@@ -94,7 +94,6 @@ class Model(object):
 		state_false = False
 		if self._type == 'mysql':
 			state_true = '1'
-		else:
 			state_false = '2'
 		if self._set:
 			for key in self._set:
@@ -697,7 +696,7 @@ class Sql(object):
 				logic = ''
 			else:
 				logic = ' ' + logic
-			result = logic + ' `' + key + '` ' + exp + ' ' + str(val)
+			result = logic + ' ' + key + ' ' + exp + ' ' + str(val)
 		return result
 
 	def order(self, value):
