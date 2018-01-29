@@ -214,10 +214,11 @@ class Web(object):
 				result = method(self, *args, **kwargs)
 				return result
 			except Exception as e:
-				if e == 'Finish':
+				import traceback
+				error = traceback.format_exc()
+				if 'Finish' in error:
 					return
 				else:
-					import traceback
 					traceback.print_exc()
 					try:
 						return self.view('404.html')
