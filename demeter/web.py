@@ -214,12 +214,15 @@ class Web(object):
 				result = method(self, *args, **kwargs)
 				return result
 			except Exception as e:
-				import traceback
-				traceback.print_exc()
-				try:
-					return self.view('404.html')
-				except Exception as e:
-					return self.out('404')
+				if e == 'Finish':
+					return
+				else:
+					import traceback
+					traceback.print_exc()
+					try:
+						return self.view('404.html')
+					except Exception as e:
+						return self.out('404')
 			#return gevent.spawn(method, self, *args, **kwargs)
 		return callback
 
