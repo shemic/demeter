@@ -188,7 +188,11 @@ class Base(tornado.web.RequestHandler):
 		elif function:
 			result = '<script>parent.' + function + '(' + result + ')' + '</script>';
 		self.write(result)
-		self.finish()
+		if send['status'] == 2:
+			from tornado.web import Finish
+			raise Finish()
+		else:
+			self.finish()
 
 class Web(object):
 	@classmethod

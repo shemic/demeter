@@ -336,11 +336,8 @@ class Demeter(object):
 
 	@classmethod
 	def error(self, string):
-		from tornado.web import Finish
 		if self.request:
 			self.request.out(string)
-			#self.request.finish()
-			raise Finish()
 		else:
 			self.echo(string)
 			#os._exit(0)
