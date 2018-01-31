@@ -153,6 +153,7 @@ class Demeter(object):
 
 	@classmethod
 	def service(self, name):
+		self.initConfig()
 		path = 'service.'
 		if name == 'common':
 			path = 'demeter.'
@@ -162,6 +163,7 @@ class Demeter(object):
 
 	@classmethod
 	def adminModel(self, table):
+		self.initConfig()
 		config = ('manage_admin', 'manage_log', 'manage_role')
 		if table in config:
 			return self.getClass(table, 'demeter.admin.model.')
@@ -169,6 +171,7 @@ class Demeter(object):
 
 	@classmethod
 	def model(self, table, name='rdb'):
+		self.initConfig()
 		name = self.config['db'][name]
 		config = self.config[name]
 		obj = self.getObject('db', 'demeter.')
@@ -230,6 +233,7 @@ class Demeter(object):
 
 	@classmethod
 	def webInit(self, name):
+		self.initConfig()
 		self.web = name
 		self.webPath = self.path + self.web + '/'
 		if self.web == 'admin':
@@ -476,5 +480,3 @@ class Check(object):
 			return True
 		except ValueError:
 			return False
-
-Demeter.initConfig()
