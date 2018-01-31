@@ -165,28 +165,9 @@ class Base(tornado.web.RequestHandler):
 		self.out('您没有权限')
 
 	def out(self, msg='', data={}, code=0):
-		if data:
-			if 'page' in data and data['page']['total'] <= 0:
-				del data['page']
-			if 'update' in data and not data['update']:
-				del data['update']
-			if 'search' in data and not data['search']:
-				del data['search']
 		callback = self.input('callback')
 		function = self.input('function')
-		result = ''
-		send = {}
-		send['status'] = 1
-		send['msg'] = msg
-		send['data'] = data
-		send['code'] = code
-		if not send['data']:
-			send['status'] = 2
-		result = json.dumps(send)
-		if callback:
-			result = callback + '(' + result + ')'
-		elif function:
-			result = '<script>parent.' + function + '(' + result + ')' + '</script>';
+		result = Demeter.out(msg=msg, data=data, code=code, callback=callback, function=function)
 		self.write(result)
 		if send['status'] == 2:
 			from tornado.web import Finish

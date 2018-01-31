@@ -335,6 +335,30 @@ class Demeter(object):
 		return result
 
 	@classmethod
+	def out(self, msg='', data={}, code=0, callback='', function=''):
+		if data:
+			if 'page' in data and data['page']['total'] <= 0:
+				del data['page']
+			if 'update' in data and not data['update']:
+				del data['update']
+			if 'search' in data and not data['search']:
+				del data['search']
+		result = ''
+		send = {}
+		send['status'] = 1
+		send['msg'] = msg
+		send['data'] = data
+		send['code'] = code
+		if not send['data']:
+			send['status'] = 2
+		result = json.dumps(send)
+		if callback:
+			result = callback + '(' + result + ')'
+		elif function:
+			result = '<script>parent.' + function + '(' + result + ')' + '</script>';
+		return result
+
+	@classmethod
 	def error(self, string):
 		if self.request:
 			self.request.out(string)
