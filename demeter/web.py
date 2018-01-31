@@ -169,7 +169,7 @@ class Base(tornado.web.RequestHandler):
 		function = self.input('function')
 		result = Demeter.out(msg=msg, data=data, code=code, callback=callback, function=function)
 		self.write(result)
-		if send['status'] == 2:
+		if not data:
 			from tornado.web import Finish
 			raise Finish()
 		else:
