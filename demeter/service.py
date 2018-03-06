@@ -48,7 +48,7 @@ class Service(object):
 				method = 'assign'
 				if 'date' in key:
 					method = 'time'
-				self.assign(mvalueodel, key, , method)
+				self.assign(model, key, value, method)
 			return model.insert()
 
 	def delete(self, name, id, state = False):
