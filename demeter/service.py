@@ -20,10 +20,10 @@ class Service(object):
 						if keyLen > 2 and key[2]:
 							method = key[2]
 						else:
-							method = 'assgin'
-						self.assgin(model, key[0], value, method)
+							method = 'assign'
+						self.assign(model, key[0], value, method)
 					else:
-						self.assgin(model, key, value)
+						self.assign(model, key, value)
 		data = model.select(page=page, order=order, limit=limit)
 		return data
 
@@ -31,7 +31,7 @@ class Service(object):
 		model = self.model(name)
 		if kwd:
 			for key,value in kwd.items():
-				self.assgin(model, key, value)
+				self.assign(model, key, value)
 		data = model.select(type='fetchone')
 		return data
 
@@ -45,10 +45,10 @@ class Service(object):
 			return id
 		else:
 			for key, value in data.items():
-				method = 'assgin'
+				method = 'assign'
 				if 'date' in key:
 					method = 'time'
-				self.assgin(model, key, value, method)
+				self.assign(mvalueodel, key, , method)
 			return model.insert()
 
 	def delete(self, name, id, state = False):
@@ -64,7 +64,7 @@ class Service(object):
 	def model(self, name):
 		return Demeter.model(name)
 
-	def assgin(self, model, key, value, method='assgin'):
+	def assign(self, model, key, value, method='assign'):
 		if hasattr(model, key):
 			attr = getattr(model, key)
 			if hasattr(attr, method):

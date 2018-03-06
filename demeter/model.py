@@ -558,7 +558,7 @@ class Sql(object):
 				indexs.append(key)
 
 			fields = []
-			fields.append(key)
+			fields.append('`' + key + '`')
 			if val.autoIncrement and self.type == 'postgresql':
 				fields.append('SERIAL')
 			elif self.type == 'mysql' and val.type == 'boolean':
