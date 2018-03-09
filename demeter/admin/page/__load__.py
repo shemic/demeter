@@ -47,12 +47,12 @@ class Load(Base):
         parent_str = Demeter.config['admin']['menu_parent']
         child_str = Demeter.config['admin']['menu_child']
         parent_str = parent_str + ',基础设置:&#xe62a;'
-        child_str = child_str + '\r\n管理员设置:/admin/admin,管理权限设置:/admin/role,系统日志:/admin/log'
+        child_str = child_str + ';管理员设置:/admin/admin,管理权限设置:/admin/role,系统日志:/admin/log'
 
         parent = self.getMenu(parent_str)
 
         child = []
-        temp = child_str.split('\r\n')
+        temp = child_str.split(';')
         for i in temp:
             child.append(self.getMenu(i))
 
