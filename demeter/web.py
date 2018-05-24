@@ -4,9 +4,9 @@
 	name:web.py
 	author:rabin
 """
-from gevent import monkey
-monkey.patch_all()
-import gevent
+#from gevent import monkey
+#monkey.patch_all()
+#import gevent
 import functools
 
 import os
