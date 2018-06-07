@@ -1,5 +1,4 @@
 tornado<=4.5.3
-gevent
 pymysql
 celery
 short_url
