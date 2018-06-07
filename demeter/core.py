@@ -418,6 +418,7 @@ class File(object):
 			os.makedirs(path)
 		return path
 
+	@staticmethod
 	def ext(path):
 		return os.path.splitext(path)[1]
 
