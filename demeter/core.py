@@ -418,6 +418,9 @@ class File(object):
 			os.makedirs(path)
 		return path
 
+	def ext(path):
+		return os.path.splitext(path)[1]
+
 class Shell(object):
 	@staticmethod
 	def popen(command, sub=False, bg=False, timeout=0):
