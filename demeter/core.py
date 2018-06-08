@@ -374,7 +374,7 @@ class Demeter(object):
 	def redis(self):
 		import redis
 		config = self.config['redis']
-		pool = redis.ConnectionPool(host=config['host'], port=int(config['host']['port']))
+		pool = redis.ConnectionPool(host=config['host'], port=int(config['port']))
 		return redis.Redis(connection_pool=pool)
 
 class File(object):
