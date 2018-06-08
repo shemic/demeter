@@ -370,6 +370,13 @@ class Demeter(object):
 			self.echo(string)
 			#os._exit(0)
 
+	@classmethod
+	def redis(self):
+		import redis
+		config = self.config['redis']
+		pool = redis.ConnectionPool(host=config['host'], port=config['host']['port'])
+		return redis.Redis(connection_pool=pool)
+
 class File(object):
 
 	@staticmethod
