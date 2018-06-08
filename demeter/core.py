@@ -78,7 +78,7 @@ class Demeter(object):
 			name = os.environ['DEMETER_CONF']
 		param = {}
 		param['config'] = 'c'
-		self.getopt(param)
+		#self.getopt(param)
 		if 'config' in self.option and self.option['config']:
 			name = self.option['config']
 		return name
