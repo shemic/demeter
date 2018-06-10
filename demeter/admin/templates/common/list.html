@@ -73,6 +73,7 @@
 {% end %}
 
 {% block tbody %}
+  {% if 'list' in data and data['list'] %}
   {% for value in data['list'] %}
   <tr>
     {% for key in data['common']['tbody'] %}
@@ -115,6 +116,7 @@
     </td>
     {% end %}
   </tr>
+  {% end %}
   {% end %}
 {% end %}
 

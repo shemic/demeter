@@ -373,6 +373,7 @@ class Demeter(object):
 
 	@classmethod
 	def redis(self):
+		self.initConfig()
 		import redis
 		config = self.config['redis']
 		pool = redis.ConnectionPool(host=config['host'], port=int(config['port']))
