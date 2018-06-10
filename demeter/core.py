@@ -78,7 +78,7 @@ class Demeter(object):
 			name = os.environ['DEMETER_CONF']
 		param = {}
 		param['config'] = 'c'
-		#self.getopt(param)
+		self.getopt(param)
 		if 'config' in self.option and self.option['config']:
 			name = self.option['config']
 		return name
@@ -114,7 +114,8 @@ class Demeter(object):
 						else:
 							self.option[k] = value
 		except getopt.GetoptError:
-			self.usage()
+			#self.usage()
+			return
 
 	@classmethod
 	def usage(self, name = 'usage'):
