@@ -253,6 +253,17 @@ class Demeter(object):
 			return hashlib.md5(value.encode("utf-8")).hexdigest()
 
 	@classmethod
+	def sha1(self, value, salt=False):
+		import hashlib
+		if salt:
+			if salt == True:
+				salt = self.rand()
+			value = value + salt
+			return hashlib.sha1(value.encode("utf-8")).hexdigest() + '_' + salt
+		else:
+			return hashlib.sha1(value.encode("utf-8")).hexdigest()
+
+	@classmethod
 	def rand(self, length = 4):
 		module = self.getObject('random')
 		rand = getattr(module, 'randint')
@@ -392,6 +403,20 @@ class File(object):
 	def read(path, name = ''):
 		handle = open(path + name, 'r')
 		content = handle.read()
+		handle.close()
+		return content
+		
+	@staticmethod
+	def readContent(path, name = ''):
+		content = ''
+		handle = open(path + name, 'r')
+		while True:
+			line = handle.readline()
+			if line:
+				line = line.rstrip("\n")
+				content = content + line
+			else:
+				break
 		handle.close()
 		return content
 
