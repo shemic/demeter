@@ -288,6 +288,7 @@ class Web(object):
 		handlers = []
 		def application_setting():
 			handlers.append((r"/upload/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/upload/'}))
+			handlers.append((r"/files/(.*[\.png|\.jpg|\.gif])", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/files/'}))
 			handlers.append((r"/qrcode/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/qrcode/'}))
 			handlers.append((r"/camera/(.*)", tornado.web.StaticFileHandler, {"path": Demeter.path + 'runtime/camera/'}))
 			handlers.append((r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}))
