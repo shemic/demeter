@@ -273,6 +273,16 @@ class Demeter(object):
 		for i in range(length):
 			salt += chars[rand(0, len_chars)]
 		return salt
+
+	@classmethod
+	def hash(self):
+		return self.md5(str(time.clock()))
+
+	@classmethod
+	def uuid(self, value):
+		import uuid
+		return uuid.uuid5(uuid.uuid1(), value)
+
 	@staticmethod
 	def hour(value):
 		if value < 10:
@@ -303,6 +313,14 @@ class Demeter(object):
 		except ValueError:
 			return result
 		return result
+
+	@staticmethod
+	def host(value):
+		import urllib
+		protocol, s1 = urllib.splittype(value)
+		value, s2 = urllib.splithost(s1)
+		value, port = urllib.splitport(value)
+		return value
 
 	@staticmethod
 	def compressUuid(value):

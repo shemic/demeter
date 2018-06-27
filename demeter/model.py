@@ -274,7 +274,7 @@ class Model(object):
 		else:
 			system = self._attr[field].uuid
 		name = system + '.' + self.__table__
-		result = uuid.uuid5(uuid.uuid1(), name)
+		result = Demeter.uuid(name)
 		result = str(result)
 		setattr(self, field, result)
 
