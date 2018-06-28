@@ -281,7 +281,7 @@ class Demeter(object):
 	@classmethod
 	def uuid(self, value):
 		import uuid
-		return uuid.uuid5(uuid.uuid1(), value)
+		return str(uuid.uuid5(uuid.uuid1(), value))
 
 	@staticmethod
 	def hour(value):

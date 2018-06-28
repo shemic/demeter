@@ -275,7 +275,6 @@ class Model(object):
 			system = self._attr[field].uuid
 		name = system + '.' + self.__table__
 		result = Demeter.uuid(name)
-		result = str(result)
 		setattr(self, field, result)
 
 	def createMd5(self, value):
