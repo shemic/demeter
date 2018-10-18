@@ -443,6 +443,10 @@ class File(object):
 		return os.path.split(os.path.realpath(__file__))[0] + '/'
 
 	@staticmethod
+	def getFiles(path):
+		return os.listdir(path)
+
+	@staticmethod
 	def path():
 		return os.sys.path[0] + '/'
 
