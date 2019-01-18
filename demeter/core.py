@@ -405,7 +405,7 @@ class Demeter(object):
 		self.initConfig()
 		import redis
 		config = self.config['redis']
-		pool = redis.ConnectionPool(host=config['host'], port=int(config['port']))
+		pool = redis.ConnectionPool(host=config['host'], password=config['password'], port=int(config['port']))
 		return redis.Redis(connection_pool=pool)
 
 class File(object):
