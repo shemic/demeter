@@ -28,6 +28,9 @@ class Model(object):
 		self.log = []
 		self.sql = False
 		self.bind = False
+		self.place = '%s'
+		if self._type == 'sqlite':
+			self.place = '?'
 		self.setTable(self.__table__)
 		self.create()
 
@@ -180,6 +183,7 @@ class Model(object):
 		self._attr = {}
 		self._bind = {}
 		self._key = {}
+
 		if Demeter.checkPy3():
 			col = (int, str, float, bool, uuid.UUID)
 			code = (str,)
@@ -227,7 +231,7 @@ class Model(object):
 						val = tuple(val)
 					self._bind[field] = val
 					self._attr[field].val(self._bind[field])
-					self._attr[field].bind('%s')
+					self._attr[field].bind(s)
 
 		self._key = sorted(self._key.items(), key=lambda d:d[1], reverse = False)
 		Counter().unset()
@@ -331,7 +335,7 @@ class Model(object):
 				return False
 		if type == 'fetchone':
 			limit = '0,1'
-		load = getattr(Sql(self._type), method)
+		load = getattr(Sql(self._type, self.place), method)
 		return self.execute(load(self._table, {'key':self._key, 'fields':self._attr, 'col':col, 'order':order, 'group':group, 'limit':limit, 'page':page, 'set':set, 'table_comment':self.__comment__}), method, type)
 
 
@@ -526,8 +530,9 @@ class Sql(object):
 		return Sql.instance
 	"""
 
-	def __init__(self, type):
+	def __init__(self, type, place):
 		self.type = type
+		self.place = place
 
 	def drop(self, table, args):
 		sql = 'DROP TABLE IF EXISTS ' + table
@@ -562,6 +567,11 @@ class Sql(object):
 				fields.append('SERIAL')
 			elif self.type == 'mysql' and val.type == 'boolean':
 				fields.append('int')
+			elif self.type == 'sqlite' and val.type == 'int':
+				if val.autoIncrement and val.primaryKey:
+					fields.append('integer PRIMARY KEY autoincrement')
+				else:
+					fields.append('integer')
 			else:
 				fields.append(val.type)
 
@@ -598,7 +608,7 @@ class Sql(object):
 			fields = ' '.join(fields)
 			create.append(fields)
 
-		if primary:
+		if primary and self.type != 'sqlite':
 			create.append('PRIMARY KEY (' + ','.join(primary) + ')')
 		if unique:
 			create.append('UNIQUE (' + ','.join(unique) + ')')
@@ -615,7 +625,7 @@ class Sql(object):
 			for value in index:
 				sql = sql + ';' + 'CREATE INDEX ' + table + '_' + value[0] +' ON ' + table + value[1]
 
-		if comment:
+		if comment and self.type != 'sqlite':
 			if args['table_comment']:
 				sql = sql + ';' + 'COMMENT ON TABLE ' + table + ' IS \''+args['table_comment']+'\''
 			for key in comment:
@@ -642,7 +652,7 @@ class Sql(object):
 	def update(self, table, args):
 		fields = []
 		for key in args['set']:
-			fields.append('`' + key + '` = %s')
+			fields.append('`' + key + '` = ' + self.place)
 
 		fields = ','.join(fields)
 		sql = 'UPDATE ' + table + ' SET ' + fields + self.where(args['key'], args['fields'])
