@@ -66,3 +66,22 @@ class Mysql(object):
 	def create(self, name):
 		sql = 'CREATE DATABASE IF NOT EXISTS '+name+' DEFAULT CHARSET utf8 COLLATE utf8_general_ci'
 		return sql
+
+class Sqlite(object):
+	"""
+	instance = None
+	def __new__(cls, *args, **kwd):
+		if Sqlite.instance is None:
+			Sqlite.instance = object.__new__(cls, *args, **kwd)
+		return Sqlite.instance
+	"""
+	def __init__(self, config):
+		sqlite3 = __import__('sqlite3')
+		self.connect = sqlite3.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'], charset=config['charset'])
+
+	def get(self):
+		return self.connect
+
+	def create(self, name):
+		sql = 'CREATE DATABASE IF NOT EXISTS '+name+' DEFAULT CHARSET utf8 COLLATE utf8_general_ci'
+		return sql
