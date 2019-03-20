@@ -77,7 +77,7 @@ class Sqlite(object):
 	"""
 	def __init__(self, config):
 		sqlite3 = __import__('sqlite3')
-		self.connect = sqlite3.connect(host=config['host'], port=int(config['port']), user=config['username'], password=config['password'], database=config['dbname'], charset=config['charset'])
+		self.connect = sqlite3.connect(config['file'])
 
 	def get(self):
 		return self.connect
