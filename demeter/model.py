@@ -231,7 +231,7 @@ class Model(object):
 						val = tuple(val)
 					self._bind[field] = val
 					self._attr[field].val(self._bind[field])
-					self._attr[field].bind(s)
+					self._attr[field].bind(self.place)
 
 		self._key = sorted(self._key.items(), key=lambda d:d[1], reverse = False)
 		Counter().unset()
