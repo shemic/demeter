@@ -78,6 +78,8 @@ class Sqlite(object):
 	def __init__(self, config):
 		sqlite3 = __import__('sqlite3')
 		self.connect = sqlite3.connect(config['file'])
+		# 插入中文问题
+		self.connect.text_factory = str
 
 	def get(self):
 		return self.connect
