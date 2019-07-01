@@ -12,7 +12,6 @@ import sys
 import json
 import subprocess
 import importlib
-import logging
 class Demeter(object):
 	path = ''
 	root = ''
@@ -413,6 +412,8 @@ class Log(object):
 
 	@staticmethod
 	def get(name):
+		import logging
+		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 		logger = logging.getLogger(name)
@@ -421,7 +422,7 @@ class Log(object):
 		path = File.path() + 'runtime/log/'
 		File.mkdir(path)
 
-		file_handler = logging.handlers.RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
+		file_handler = RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
 		file_handler.setFormatter(formatter)
 		logger.addHandler(file_handler)
