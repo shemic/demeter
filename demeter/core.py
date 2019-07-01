@@ -12,6 +12,7 @@ import sys
 import json
 import subprocess
 import importlib
+import logging
 class Demeter(object):
 	path = ''
 	root = ''
@@ -407,6 +408,25 @@ class Demeter(object):
 		config = self.config['redis']
 		pool = redis.ConnectionPool(host=config['host'], password=config['password'], port=int(config['port']))
 		return redis.Redis(connection_pool=pool)
+
+class Log(object):
+
+	@staticmethod
+	def get(name):
+		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+		logger = logging.getLogger(name)
+		logger.setLevel(logging.INFO)
+
+		path = File.path() + 'runtime/log/'
+		File.mkdir(path)
+
+		file_handler = logging.handlers.RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
+		file_handler.setLevel(level=logging.DEBUG)
+		file_handler.setFormatter(formatter)
+		logger.addHandler(file_handler)
+
+		return logger
 
 class File(object):
 

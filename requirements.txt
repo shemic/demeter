@@ -3,3 +3,4 @@ pymysql
 celery
 short_url
 requests
+logging
