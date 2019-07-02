@@ -413,8 +413,8 @@ class Demeter(object):
 
 class Log(object):
 	logger = False
-	@staticmethod
-	def init(name):
+	@classmethod
+	def init(self, name):
 		if self.logger:
 			return self.logger
 		import logging
@@ -436,8 +436,8 @@ class Log(object):
 
 class WatchDog(object):
 	observer = False
-	@staticmethod
-	def init(path = [], reloads = [], recursive = False):
+	@classmethod
+	def init(self, path = [], reloads = [], recursive = False):
 		if self.observer:
 			return self.observer
 		event_handler = WatchDogHandle(reloads)
