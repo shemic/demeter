@@ -23,6 +23,8 @@ class Demeter(object):
 	web = ''
 	request = False
 	route = []
+	logger = False
+	dog = False
 
 	def __new__(self, *args, **kwargs):
 		sys.exit()
@@ -414,17 +416,16 @@ class Demeter(object):
 		return redis.Redis(connection_pool=pool)
 
 class Log(object):
-	logger = False
-	@classmethod
-	def init(self, name):
-		if self.logger:
-			return self.logger
+	@staticmethod
+	def init(name):
+		if Demeter.logger:
+			return Demeter.logger
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-		self.logger = logging.getLogger(name)
-		self.logger.setLevel(logging.INFO)
+		Demeter.logger = logging.getLogger(name)
+		Demeter.logger.setLevel(logging.INFO)
 
 		path = File.path() + 'runtime/log/'
 		File.mkdir(path)
@@ -432,26 +433,26 @@ class Log(object):
 		file_handler = RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
 		file_handler.setFormatter(formatter)
-		self.logger.addHandler(file_handler)
+		Demeter.logger.addHandler(file_handler)
 
-		return self.logger
+		return Demeter.logger
 
 class WatchDog(object):
-	observer = False
-	@classmethod
-	def init(self, path = [], reloads = [], recursive = False):
-		if self.observer:
-			return self.observer
+
+	@staticmethod
+	def init(path = [], reloads = [], recursive = False):
+		if Demeter.dog:
+			return Demeter.dog
 		event_handler = WatchDogHandle(reloads)
-		self.observer = Observer()
+		Demeter.dog = Observer()
 		base = File.path()
 		if not path:
 			path = ['conf/',]
 		for item in path:
-			self.observer.schedule(event_handler, base + item, recursive=recursive)
-		self.observer.start()
+			Demeter.dog.schedule(event_handler, base + item, recursive=recursive)
+		Demeter.dog.start()
 
-		return self.observer
+		return Demeter.dog
 
 class WatchDogHandle(FileSystemEventHandler):
 
