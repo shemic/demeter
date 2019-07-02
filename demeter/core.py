@@ -12,6 +12,7 @@ import sys
 import json
 import subprocess
 import importlib
+import fire
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 class Demeter(object):
