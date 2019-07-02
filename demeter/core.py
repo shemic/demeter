@@ -452,7 +452,6 @@ class WatchDogHandle(FileSystemEventHandler):
 	def __init__(self, reloads = False):
 		FileSystemEventHandler.__init__(self)
 		self.reloads = reloads
-		print self.reloads
 
 	@classmethod
 	def on_modified(self, event):
