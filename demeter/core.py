@@ -156,12 +156,14 @@ class Demeter(object):
 		service.push(key, value)
 
 	@classmethod
-	def service(self, name, path = ''):
+	def service(self, name, parent = ''):
 		self.initConfig()
-		path = 'service.' + path
+		path = 'service.'
 		if name == 'common':
 			path = 'demeter.'
 			name = 'service'
+		if parent:
+			path = path + parent + '.'
 		service = self.getClass(name, path)
 		return service()
 
