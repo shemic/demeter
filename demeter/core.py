@@ -12,7 +12,7 @@ import sys
 import json
 import subprocess
 import importlib
-import fire
+#import fire
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 class Demeter(object):
@@ -412,15 +412,17 @@ class Demeter(object):
 		return redis.Redis(connection_pool=pool)
 
 class Log(object):
-
+	logger = False
 	@staticmethod
 	def init(name):
+		if self.logger:
+			return self.logger
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-		logger = logging.getLogger(name)
-		logger.setLevel(logging.INFO)
+		self.logger = logging.getLogger(name)
+		self.logger.setLevel(logging.INFO)
 
 		path = File.path() + 'runtime/log/'
 		File.mkdir(path)
@@ -428,24 +430,26 @@ class Log(object):
 		file_handler = RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
 		file_handler.setFormatter(formatter)
-		logger.addHandler(file_handler)
+		self.logger.addHandler(file_handler)
 
-		return logger
+		return self.logger
 
 class WatchDog(object):
-
+	observer = False
 	@staticmethod
 	def init(path = [], reloads = [], recursive = False):
+		if self.observer:
+			return self.observer
 		event_handler = WatchDogHandle(reloads)
-		observer = Observer()
+		self.observer = Observer()
 		base = File.path()
 		if not path:
 			path = ['conf/',]
 		for item in path:
-			observer.schedule(event_handler, base + item, recursive=recursive)
-		observer.start()
+			self.observer.schedule(event_handler, base + item, recursive=recursive)
+		self.observer.start()
 
-		return observer
+		return self.observer
 
 class WatchDogHandle(FileSystemEventHandler):
 
