@@ -12,6 +12,8 @@ import sys
 import json
 import subprocess
 import importlib
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 class Demeter(object):
 	path = ''
 	root = ''
@@ -411,7 +413,7 @@ class Demeter(object):
 class Log(object):
 
 	@staticmethod
-	def get(name):
+	def init(name):
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -428,6 +430,40 @@ class Log(object):
 		logger.addHandler(file_handler)
 
 		return logger
+
+class WatchDog(object):
+
+	@staticmethod
+	def init(path = [], reloads = [], recursive = False):
+		event_handler = WatchDogHandle(reloads)
+		observer = Observer()
+		base = File.path()
+		if not path:
+			path = ['conf/',]
+		for item in path:
+			observer.schedule(event_handler, base + item, recursive=recursive)
+		observer.start()
+
+		return observer
+
+class WatchDogHandle(FileSystemEventHandler):
+
+	@classmethod
+	def __init__(self, reloads = False):
+		FileSystemEventHandler.__init__(self)
+		self.reloads = reloads
+		print self.reloads
+
+	@classmethod
+	def on_modified(self, event):
+		if not event.is_directory and '.' in event.src_path:
+			if self.reloads:
+				for item in self.reloads:
+					item.reload()
+			elif Demeter.web:
+				Demeter.webInit(Demeter.web)
+			else:
+				Demeter.echo('modify ' + event.src_path)
 
 class File(object):
 
