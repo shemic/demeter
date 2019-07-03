@@ -7,6 +7,7 @@
 import time
 import os
 import signal
+import shutil
 import re
 import sys
 import json
@@ -522,9 +523,15 @@ class File(object):
 	def rename(old, new):
 		return os.rename(old, new)
 
-	@staticmethod
-	def remove(file):
-		return os.remove(file)
+	@classmethod
+	def remove(self, file):
+		if isinstance(file, str) and self.exists(file):
+			if os.path.isfile(file):
+				return os.remove(file)
+			else:
+				# 删除非空目录
+				return shutil.rmtree(file)
+		return False
 
 	@staticmethod
 	def mkdir(path):
@@ -541,6 +548,10 @@ class File(object):
 	@staticmethod
 	def ext(path):
 		return os.path.splitext(path)[1]
+
+	@classmethod
+	def runtime(self, path = 'data'):
+		return self.mkdir(self.path() + 'runtime/' + path + '/')
 
 class Shell(object):
 	@staticmethod

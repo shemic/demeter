@@ -11,6 +11,8 @@ import functools
 
 import os
 import json
+import threading
+import asyncio
 from demeter.core import *
 import tornado.web
 import tornado.ioloop
@@ -264,6 +266,10 @@ class Web(object):
 		return url
 	@classmethod
 	def start(self, application=[]):
+		t = threading.Thread(target=lambda: self.start_server(application))
+		t.start()
+	@classmethod
+	def start_server(self, application=[]):
 		self.init(application)
 		if 'route' in Demeter.config['setting']:
 			Demeter.echo(Demeter.route)
@@ -303,7 +309,7 @@ class Web(object):
 
 		application_setting()
 		application = tornado.web.Application(handlers=handlers, **settings)
-		
+		asyncio.set_event_loop(asyncio.new_event_loop())
 		if settings['debug'] == True:
 			application.listen(settings['port'])
 			tornado.ioloop.IOLoop.instance().start()
