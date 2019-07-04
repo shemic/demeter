@@ -419,14 +419,12 @@ class Demeter(object):
 class Log(object):
 	@staticmethod
 	def init(name):
-		if Demeter.logger:
-			return Demeter.logger
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-		Demeter.logger = logging.getLogger(name)
-		Demeter.logger.setLevel(logging.INFO)
+		logger = logging.getLogger(name)
+		logger.setLevel(logging.INFO)
 
 		path = File.path() + 'runtime/log/'
 		File.mkdir(path)
@@ -434,26 +432,24 @@ class Log(object):
 		file_handler = RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
 		file_handler.setFormatter(formatter)
-		Demeter.logger.addHandler(file_handler)
+		logger.addHandler(file_handler)
 
-		return Demeter.logger
+		return logger
 
 class WatchDog(object):
 
 	@staticmethod
 	def init(path = [], reloads = [], recursive = False):
-		if Demeter.dog:
-			return Demeter.dog
 		event_handler = WatchDogHandle(reloads)
-		Demeter.dog = Observer()
+		dog = Observer()
 		base = File.path()
 		if not path:
 			path = ['conf/',]
 		for item in path:
-			Demeter.dog.schedule(event_handler, base + item, recursive=recursive)
-		Demeter.dog.start()
+			dog.schedule(event_handler, base + item, recursive=recursive)
+		dog.start()
 
-		return Demeter.dog
+		return dog
 
 class WatchDogHandle(FileSystemEventHandler):
 
