@@ -417,8 +417,8 @@ class Demeter(object):
 		return redis.Redis(connection_pool=pool)
 
 class Log(object):
-	@staticmethod
-	def init(name):
+	@classmethod
+	def init(self, name):
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -426,15 +426,24 @@ class Log(object):
 		logger = logging.getLogger(name)
 		logger.setLevel(logging.INFO)
 
-		path = File.path() + 'runtime/log/'
-		File.mkdir(path)
-
-		file_handler = RotatingFileHandler(os.path.join(path, 'vecan.log'), maxBytes=1024*1024,backupCount=5)
+		file_handler = RotatingFileHandler(self.file(name), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
 		file_handler.setFormatter(formatter)
 		logger.addHandler(file_handler)
 
 		return logger
+	@classmethod
+	def read(self, name, lines=200):
+		file = self.file(name)
+		if File.exists(file):
+			return File.tail(file, lines)
+		return ''
+	@classmethod
+	def file(self, name):
+		path = File.path() + 'runtime/log/'
+		File.mkdir(path)
+
+		return os.path.join(path, 'vecan.log')
 
 class WatchDog(object):
 
@@ -548,6 +557,40 @@ class File(object):
 	@classmethod
 	def runtime(self, path = 'data'):
 		return self.mkdir(self.path() + 'runtime/' + path + '/')
+
+	"""
+	实现 tail -n
+	"""
+	@classmethod
+	def tail(self, filepath, n=10):
+	
+	res = ""
+	with open(filepath, 'rb') as f:
+		f_len = f.seek(0, 2)
+		rem = f_len % PAGE
+		page_n = f_len // PAGE
+		r_len = rem if rem else PAGE
+		while True:
+			# 如果读取的页大小>=文件大小，直接读取数据输出
+			if r_len >= f_len:
+				f.seek(0)
+				lines = f.readlines()[::-1]
+				break
+
+			f.seek(-r_len, 2)
+			# print('f_len: {}, rem: {}, page_n: {}, r_len: {}'.format(f_len, rem, page_n, r_len))
+			lines = f.readlines()[::-1]
+			count = len(lines) -1   # 末行可能不完整，减一行，加大读取量
+
+			if count >= n:  # 如果读取到的行数>=指定行数，则退出循环读取数据
+				break
+			else:   # 如果读取行数不够，载入更多的页大小读取数据
+				r_len += PAGE
+				page_n -= 1
+
+	for line in lines[:n][::-1]:
+		res += line.decode('utf-8')
+	return res
 
 class Shell(object):
 	@staticmethod
