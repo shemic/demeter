@@ -563,7 +563,7 @@ class File(object):
 	"""
 	@classmethod
 	def tail(self, filepath, n=10):
-	
+		PAGE = 4096
 		res = ""
 		with open(filepath, 'rb') as f:
 			f_len = f.seek(0, 2)
