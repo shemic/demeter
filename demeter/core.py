@@ -418,13 +418,18 @@ class Demeter(object):
 
 class Log(object):
 	@classmethod
-	def init(self, name, level = 10):
+	def init(self, name, output = False):
 		import logging
 		from logging.handlers import RotatingFileHandler
 		formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 		logger = logging.getLogger(name)
-		logger.setLevel(level)
+		logger.setLevel(logging.DEBUG)
+
+		if output:
+			stream_handler = logging.StreamHandler(sys.stderr)
+			stream_handler.setFormatter(formatter)
+			logger.addHandler(stream_handler)
 
 		file_handler = RotatingFileHandler(self.file(name), maxBytes=1024*1024,backupCount=5)
 		file_handler.setLevel(level=logging.DEBUG)
