@@ -204,15 +204,15 @@ class Demeter(object):
 	def getPackage(self, package):
 		import pkgutil
 		for importer, modname, ispkg in pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None):
-			yield (importer, modname)
+			yield modname
 
 	@classmethod
 	def getPath(self, path):
 		import pkgutil
 		for importer, modname, ispkg in pkgutil.walk_packages(path):
-			#loader = importer.find_module(modname)
-			#mod = loader.load_module(modname)
-			yield (importer, modname)
+			loader = importer.find_module(modname)
+			mod = loader.load_module(modname)
+			yield mod
 
 	@staticmethod
 	def getObject(name, path = ''):
