@@ -160,15 +160,19 @@ class Demeter(object):
 
 	@classmethod
 	def service(self, name, parent = ''):
+		return self.load(name, parent, 'service')
+
+	@classmethod
+	def load(self, name, parent = '', base = 'service'):
 		self.initConfig()
-		path = 'service.'
+		path = base + '.'
 		if name == 'common':
 			path = 'demeter.'
-			name = 'service'
+			name = base
 		if parent:
 			path = path + parent + '.'
-		service = self.getClass(name, path)
-		return service()
+		load = self.getClass(name, path)
+		return load()
 
 	@classmethod
 	def adminModel(self, table):
@@ -201,6 +205,14 @@ class Demeter(object):
 		import pkgutil
 		for importer, modname, ispkg in pkgutil.walk_packages(path=package.__path__, prefix=package.__name__ + '.', onerror=lambda x: None):
 			yield modname
+
+	@classmethod
+	def getPath(self, path):
+		import pkgutil
+		for importer, modname, ispkg in pkgutil.walk_packages(path):
+			loader = importer.find_module(modname)
+			mod = loader.load_module(modname)
+			yield mod
 
 	@staticmethod
 	def getObject(name, path = ''):
