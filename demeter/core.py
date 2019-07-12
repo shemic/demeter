@@ -448,7 +448,7 @@ class Log(object):
 		path = File.path() + 'runtime/log/'
 		File.mkdir(path)
 
-		return os.path.join(path, 'vecan.log')
+		return os.path.join(path, name + '.log')
 
 class WatchDog(object):
 
