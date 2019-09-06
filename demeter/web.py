@@ -8,11 +8,9 @@
 #monkey.patch_all()
 #import gevent
 import functools
-
 import os
 import json
 import threading
-import asyncio
 from demeter.core import *
 import tornado.web
 import tornado.ioloop
@@ -309,7 +307,9 @@ class Web(object):
 
 		application_setting()
 		application = tornado.web.Application(handlers=handlers, **settings)
-		asyncio.set_event_loop(asyncio.new_event_loop())
+		if Demeter.checkPy3():
+			import asyncio
+			asyncio.set_event_loop(asyncio.new_event_loop())
 		if settings['debug'] == True:
 			application.listen(settings['port'])
 			tornado.ioloop.IOLoop.instance().start()
