@@ -24,8 +24,9 @@ class Influxdb(object):
 		return self.connect
 
 	def create(self, name):
-		database = self.connect.get_list_database()
-		self.connect.create_database(name)
+		if not Demeter.runtime('influxdb', name, sql):
+			database = self.connect.get_list_database()
+			self.connect.create_database(name)
 
 
 class Postgresql(object):
@@ -39,6 +40,7 @@ class Postgresql(object):
 	def __init__(self, config):
 		psycopg2 = __import__('psycopg2')
 		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'], database=config['dbname'])
+		self.create()
 
 	def get(self):
 		return self.connect
@@ -46,6 +48,9 @@ class Postgresql(object):
 	def create(self, name):
 		'psql -U postgres'
 		sql = 'CREATE DATABASE '+name+' WITH OWNER = postgres ENCODING = "UTF8"'
+
+		if not Demeter.runtime('postgresql', name, sql):
+			self.connect.cursor().execute(sql)
 		return sql
 
 class Mysql(object):
@@ -65,6 +70,8 @@ class Mysql(object):
 
 	def create(self, name):
 		sql = 'CREATE DATABASE IF NOT EXISTS '+name+' DEFAULT CHARSET utf8 COLLATE utf8_general_ci'
+		if not Demeter.runtime('mysql', name, sql):
+			self.connect.cursor().execute(sql)
 		return sql
 
 class Sqlite(object):
@@ -86,4 +93,6 @@ class Sqlite(object):
 
 	def create(self, name):
 		sql = 'CREATE DATABASE IF NOT EXISTS '+name+' DEFAULT CHARSET utf8 COLLATE utf8_general_ci'
+		if not Demeter.runtime('sqlite', name, sql):
+			self.connect.cursor().execute(sql)
 		return sql
