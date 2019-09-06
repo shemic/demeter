@@ -533,6 +533,9 @@ class Sql(object):
 	def __init__(self, type, place):
 		self.type = type
 		self.place = place
+		self.prefix = '`'
+		if self.type == 'postgresql':
+			self.prefix = ''
 
 	def drop(self, table, args):
 		sql = 'DROP TABLE IF EXISTS ' + table
@@ -562,7 +565,7 @@ class Sql(object):
 				indexs.append(key)
 
 			fields = []
-			fields.append('`' + key + '`')
+			fields.append(self.prefix + key + self.prefix)
 			if val.autoIncrement and self.type == 'postgresql':
 				fields.append('SERIAL')
 			elif self.type == 'mysql' and val.type == 'boolean':
@@ -640,7 +643,7 @@ class Sql(object):
 			val = args['fields'][key].getBind()
 			if val:
 				values.append(val)
-				fields.append('`' + key + '`')
+				fields.append(self.prefix + key + self.prefix)
 
 		fields = ','.join(fields)
 		values = ','.join(values)
@@ -652,7 +655,7 @@ class Sql(object):
 	def update(self, table, args):
 		fields = []
 		for key in args['set']:
-			fields.append('`' + key + '` = ' + self.place)
+			fields.append(self.prefix + key + self.prefix + ' = ' + self.place)
 
 		fields = ','.join(fields)
 		sql = 'UPDATE ' + table + ' SET ' + fields + self.where(args['key'], args['fields'])
@@ -708,7 +711,7 @@ class Sql(object):
 				logic = ''
 			else:
 				logic = ' ' + logic
-			result = logic + ' `' + key + '` ' + exp + ' ' + str(val)
+			result = logic + ' ' + self.prefix + key + self.prefix + ' ' + exp + ' ' + str(val)
 		return result
 
 	def order(self, value):
