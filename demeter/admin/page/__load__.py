@@ -11,7 +11,8 @@ class Load(Base):
     def admin(self):
         self.data['auth'] = True
         
-        if 'admin' in self.data['setting'] and self.data['setting']['admin'] > 0:
+        if 'admin' in self.data['setting'] and self.data['setting']['admin']:
+            self.data['setting']['admin'] = int(self.data['setting']['admin'])
             self.data['setting']['adminInfo'] = self.service('common').one('manage_admin', id=self.data['setting']['admin'])
             if self.data['setting']['adminInfo']:
                 self.data['setting']['roleInfo'] = self.service('common').one('manage_role', id=self.data['setting']['adminInfo']['role_id'])
