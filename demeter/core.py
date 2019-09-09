@@ -284,13 +284,21 @@ class Demeter(object):
 			return hashlib.sha1(value.encode("utf-8")).hexdigest()
 
 	@classmethod
+	def range(self, length):
+		if self.checkPy3():
+			return range(length)
+		else:
+			return xrange(length)
+
+	@classmethod
 	def rand(self, length = 4):
 		module = self.getObject('random')
 		rand = getattr(module, 'randint')
 		salt = ''
 		chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
 		len_chars = len(chars) - 1
-		for i in range(length):
+		l = Demeter.range(length)
+		for i in l:
 			salt += chars[rand(0, len_chars)]
 		return salt
 
@@ -347,7 +355,8 @@ class Demeter(object):
 		row = value.replace('-', '')
 		code = ''
 		hash = [x for x in "0123456789-abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
-		for i in xrange(10):
+		l = Demeter.range(10)
+		for i in l:
 			enbin = "%012d" % int(bin(int(row[i * 3] + row[i * 3 + 1] + row[i * 3 + 2], 16))[2:], 10)
 			code += (hash[int(enbin[0:6], 2)] + hash[int(enbin[6:12], 2)])
 		return code

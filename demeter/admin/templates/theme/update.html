@@ -15,7 +15,7 @@
             <input type="hidden" name="url" id="url" value="{% block url %}{% end %}" />
             <input type="hidden" name="project" id="project" value="ai" />
             <input type="hidden" name="table" id="table" value="col" />
-            <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] > 0 %}{{data['info']['id']}}{% end %}" />
+            <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] %}{{data['info']['id']}}{% end %}" />
             <iframe id="f1" name="f1" style="display:none;"></iframe>
 
                 {% block form %}

@@ -82,9 +82,15 @@ class Base(tornado.web.RequestHandler):
 		for key in data:
 			if 'search_' in key:
 				index = key.replace('search_', '')
+				i = 0
+				for a in data[key]:
+					data[key][i] = a.decode()
 				self.data['search'][index] = ",".join(data[key])
 			if 'update_' in key:
 				index = key.replace('update_', '')
+				i = 0
+				for a in data[key]:
+					data[key][i] = a.decode()
 				self.data['update'][index] = ",".join(data[key])
 
 	def input(self, key, value=None):
