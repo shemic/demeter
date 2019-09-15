@@ -52,7 +52,8 @@ class Connect(object):
 		client.subscribe(key)
 
 	def handle(self, key, value):
-		Demeter.record(key, value)
+		service = Demeter.service('record', 'mqtt')
+		service.push(key, value)
 
 
 class Pub(object):

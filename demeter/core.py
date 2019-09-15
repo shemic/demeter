@@ -62,8 +62,9 @@ class Demeter(object):
 
 	@classmethod
 	def initConfig(self):
-		self.path = File.path()
-		self.root = File.cur_path()
+		if not self.path:
+			self.path = File.path()
+			self.root = File.cur_path()
 		if self.config == {}:
 			filename = self.path + 'conf/'+self.getConfigName()+'.conf'
 			if File.exists(filename):
@@ -74,8 +75,10 @@ class Demeter(object):
 					self.config[item] = self.readConfig(config, item)
 				return True
 			else:
-				Demeter.echo(filename + ' is not exists')
-				sys.exit()
+				self.path = self.path + '../'
+				return self.initConfig()
+				#Demeter.echo(filename + ' is not exists')
+				#sys.exit()
 
 	@classmethod
 	def getConfigName(self):
