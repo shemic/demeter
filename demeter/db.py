@@ -24,9 +24,8 @@ class Influxdb(object):
 		return self.connect
 
 	def create(self, name):
-		if not Demeter.runtime('influxdb', name, sql):
-			database = self.connect.get_list_database()
-			self.connect.create_database(name)
+		database = self.connect.get_list_database()
+		self.connect.create_database(name)
 
 
 class Postgresql(object):
