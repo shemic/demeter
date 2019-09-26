@@ -91,6 +91,7 @@ class Base(tornado.web.RequestHandler):
 				i = 0
 				for a in data[key]:
 					data[key][i] = a.decode()
+					i = i + 1
 				self.data['update'][index] = ",".join(data[key])
 
 	def input(self, key, value=None):
