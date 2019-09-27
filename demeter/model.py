@@ -59,6 +59,8 @@ class Model(object):
 	def lastId(self, cur):
 		if hasattr(cur, 'lastrowid'):
 			id = cur.lastrowid
+			if not id:
+				id = cur.fetchone()[0]
 		else:
 			id = cur.fetchone()[0]
 		return id
