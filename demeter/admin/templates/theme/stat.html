@@ -18,7 +18,7 @@
         </div>
         <div class="x-body">
             <form class="layui-form x-center" action="{{data['common']['path']}}" style="width:auto">
-            <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] > 0 %}{{data['info']['id']}}{% end %}" />
+            <input type="hidden" name="id" id="id" value="{% if data['info'] and 'id' in data['info'] and data['info']['id'] %}{{data['info']['id']}}{% end %}" />
             <input type="hidden" name="method" id="method" value="{% if 'method' in data and data['method'] %}{{data['method']}}{% end %}" />
                 <div class="layui-form-pane" style="margin-top: 15px;">
                   <div class="layui-form-item">
