@@ -4,7 +4,7 @@
     name:db.py
     author:rabin
 """
-
+from demeter.core import *
 class Influxdb(object):
 	"""
 	instance = None
@@ -38,8 +38,8 @@ class Postgresql(object):
 	"""
 	def __init__(self, config):
 		psycopg2 = __import__('psycopg2')
-		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'], database=config['dbname'])
-		#self.create(config['dbname'])
+		self.create(config['dbname'])
+		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'])
 
 	def get(self):
 		return self.connect
@@ -49,8 +49,8 @@ class Postgresql(object):
 		sql = 'CREATE DATABASE '+name+' WITH OWNER = postgres ENCODING = "UTF8"'
 
 		if not Demeter.runtime('postgresql', name, sql):
-			self.connect.cursor().execute(sql)
-		return sql
+			Shell.popen('createdb -h localhost -p 5432 -U postgres ' + name)
+		return True
 
 class Mysql(object):
 	"""
