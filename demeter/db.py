@@ -48,7 +48,7 @@ class Postgresql(object):
 		'psql -U postgres'
 		sql = 'CREATE DATABASE '+name+' WITH OWNER = postgres ENCODING = "UTF8"'
 
-		if not Demeter.runtime('postgresql', name, sql):
+		if Demeter.runtime('postgresql', name, sql):
 			Shell.popen('createdb -h localhost -p 5432 -U postgres ' + name)
 		return True
 
