@@ -39,7 +39,7 @@ class Postgresql(object):
 	def __init__(self, config):
 		psycopg2 = __import__('psycopg2')
 		self.create(config['dbname'])
-		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'])
+		self.connect = psycopg2.connect(host=config['host'], port=config['port'], user=config['username'], password=config['password'], database=config['dbname'])
 
 	def get(self):
 		return self.connect
