@@ -42,19 +42,22 @@ class Service(object):
 			if cdate == True and 'cdate' not in data:
 				data['cdate'] = 'time'
 			model.update(data)
-			return id
 		else:
 			for key, value in data.items():
 				method = 'assign'
 				if 'date' in key:
 					method = 'time'
 				self.assign(model, key, value, method)
-			return model.insert()
+			id = model.insert()
+		Demeter.sync(name, id)
+		return id
 
 	def delete(self, name, id, state = False):
 		model = self.model(name)
 		model.id = id
-		return model.update(state=state)
+		state = model.update(state=state)
+		Demeter.sync(name, id)
+		return state
 
 	def rDelete(self, name, id):
 		model = self.model(name)

@@ -26,6 +26,7 @@ class Demeter(object):
 	route = []
 	logger = False
 	dog = False
+	syncData = {}
 
 	def __new__(self, *args, **kwargs):
 		sys.exit()
@@ -439,6 +440,14 @@ class Demeter(object):
 		config = self.config['redis']
 		pool = redis.ConnectionPool(host=config['host'], password=config['password'], port=int(config['port']))
 		return redis.Redis(connection_pool=pool)
+
+	def sync(self, table, id):
+		if 'sync' in Demeter.config:
+			config = Demeter.config['sync']['table'].split(',')
+			service = Demeter.config['sync']['service'].split(',')
+			if table in config and table not in self.syncData:
+				Demeter.service(service[0], service[1]).rsync(table, id)
+				self.syncData[table] = True
 
 class Log(object):
 	@classmethod
