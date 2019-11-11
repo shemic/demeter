@@ -10,7 +10,8 @@ class Service(object):
 
 	def list(self, name, state = True, search=None, page=False, order='cdate desc', limit = '0,100'):
 		model = self.model(name)
-		model.state = state
+		if state != -1:
+			model.state = state
 		if search:
 			for key, value in search.items():
 				if value or value == 0:
