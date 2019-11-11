@@ -441,6 +441,7 @@ class Demeter(object):
 		pool = redis.ConnectionPool(host=config['host'], password=config['password'], port=int(config['port']))
 		return redis.Redis(connection_pool=pool)
 
+	@classmethod
 	def sync(self, table, id):
 		if 'sync' in Demeter.config:
 			config = Demeter.config['sync']['table'].split(',')
