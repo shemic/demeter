@@ -448,7 +448,7 @@ class Demeter(object):
 			service = Demeter.config['sync']['service'].split(',')
 			if table in config and table not in self.syncData:
 				Demeter.service(service[0], service[1]).rsync(table, id)
-				self.syncData[table] = True
+				#self.syncData[table] = True
 
 class Log(object):
 	@classmethod
