@@ -85,6 +85,10 @@ class Model(object):
 			id = True
 			if method == 'insert':
 				id = self.lastId(cur)
+				Demeter.sync(self._table, id)
+			if method == 'update' and 'id' in self._bind:
+				Demeter.sync(self._table, self._bind['id'])
+				
 			self.commit()
 		except Exception as e:
 			self.addLog(str(e))

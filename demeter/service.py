@@ -50,14 +50,14 @@ class Service(object):
 					method = 'time'
 				self.assign(model, key, value, method)
 			id = model.insert()
-		Demeter.sync(name, id)
+		#Demeter.sync(name, id)
 		return id
 
 	def delete(self, name, id, state = False):
 		model = self.model(name)
 		model.id = id
 		state = model.update(state=state)
-		Demeter.sync(name, id)
+		#Demeter.sync(name, id)
 		return state
 
 	def rDelete(self, name, id):
