@@ -443,6 +443,7 @@ class Demeter(object):
 
 	@classmethod
 	def sync(self, table, id):
+		table = table.replace('demeter_', '')
 		if 'sync' in Demeter.config:
 			config = Demeter.config['sync']['table'].split(',')
 			service = Demeter.config['sync']['service'].split(',')
