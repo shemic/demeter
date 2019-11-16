@@ -392,13 +392,19 @@ class Demeter(object):
 		return value
 
 	@classmethod
-	def curl(self, url = '', param={}, method = 'get'):
+	def curl(self, url = '', param={}, method = 'get', timeout=5, max=2):
 		import requests
-		if method == 'get':
-			req = requests.get(url, params=param)
-		else:
-			req = requests.post(url, params=param)
-		result = req.text
+		try:
+			s = requests.Session()
+			s.mount('http://', HTTPAdapter(max_retries=max))
+			s.mount('https://', HTTPAdapter(max_retries=max))
+			if method == 'get':
+				req = s.get(url, params=param, timeout=timeout)
+			else:
+				req = s.post(url, params=param, timeout=timeout)
+			result = req.text
+		except requests.exceptions.RequestException as e:
+			result = False
 		return result
 
 	@classmethod
