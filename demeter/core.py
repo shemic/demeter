@@ -394,6 +394,7 @@ class Demeter(object):
 	@classmethod
 	def curl(self, url = '', param={}, method = 'get', timeout=5, max=2):
 		import requests
+		from requests.adapters import HTTPAdapter
 		try:
 			s = requests.Session()
 			s.mount('http://', HTTPAdapter(max_retries=max))
