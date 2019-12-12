@@ -20,7 +20,7 @@ class Connect(object):
 			self.client.on_message = act.message
 		else:
 			self.client.on_connect = self.connect
-		self.client.connect(Demeter.config['mqtt']['host'], Demeter.config['mqtt']['port'], int(Demeter.config['mqtt']['timeout']))
+		self.client.connect(Demeter.config['mqtt']['host'], int(Demeter.config['mqtt']['port']), int(Demeter.config['mqtt']['timeout']))
 		if state:
 			self.client.loop_forever()
 
