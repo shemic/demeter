@@ -118,10 +118,11 @@ class Base(tornado.web.RequestHandler):
 		self.data['list'] = self.service('common').list(model, state=self.data['state'], search=self.data['search'], page=True, order=order)
 
 	def one(self, model, **kwd):
-		id = self.input('id')
 		self.data['info'] = {}
-		if id:
-			kwd['id'] = id
+		if 'id' not in kwd and self.input('id'):
+			id = self.input('id')
+			if id:
+				kwd['id'] = id
 		if kwd:
 			self.data['info'] = self.service('common').one(model, **kwd)
 
