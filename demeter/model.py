@@ -288,7 +288,11 @@ class Model(object):
 		setattr(self, field, result)
 
 	def createMd5(self, value):
-		return Demeter.md5(value, salt=True)
+		if 'db_md5' in Demeter.config and Demeter.config['db_md5'] == 1:
+			Demeter.config['db_md5'] = 2
+			return value
+		else:
+			return Demeter.md5(value, salt=True)
 
 	def createState(self):
 		if 'create' in self._config:
