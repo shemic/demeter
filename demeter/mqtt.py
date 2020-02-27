@@ -11,9 +11,10 @@ import paho.mqtt.client as mqtt
 
 class Connect(object):
 
-	def __init__(self, act):
+	def __init__(self, act, topic=False):
 		act.connect = self
 		self.client = mqtt.Client()
+		self.topic = topic
 		state = hasattr(act, 'message')
 		if state:
 			self.client.on_connect = self.connectAndSub
@@ -36,7 +37,8 @@ class Connect(object):
 	def connectAndSub(self, client, userdata, flags, rc):
 		#print("Connected with result code "+str(rc))
 		#client.subscribe("sensor/#")
-		sub = Demeter.config['mqtt']['sub'].split(',')
+		#sub = Demeter.config['mqtt']['sub'].split(',')
+		sub = self.topic.split(',')
 		for value in sub:
 			client.subscribe(value + "/#")
 		"""
@@ -90,8 +92,8 @@ class Pub(object):
 
 class Sub(object):
 
-	def __init__(self):
-		Connect(self)
+	def __init__(self, topic=False):
+		Connect(self, self, topic=topic)
 
 	def __del__(self):
 		pass
