@@ -93,7 +93,7 @@ class Pub(object):
 class Sub(object):
 
 	def __init__(self, topic=False):
-		Connect(self, self, topic=topic)
+		Connect(self, topic=topic)
 
 	def __del__(self):
 		pass
