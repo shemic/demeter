@@ -16,11 +16,11 @@ class upload_path(Load):
 		url = self.request.protocol + "://" + self.request.host
 		file_metas = self.request.files["file"]
 
-		print(file_metas)
 		day = str(date.today())
 		day = day.split('-')
 		for meta in file_metas:
-			#meta['filename']
+			name = meta['filename']
+			print(name)
 			file_name =  str(uuid.uuid5(uuid.uuid1(), 'file'))
 			file_path = day[0] + '/' + day[1] + '/' + day[2]
 			file_path = File.mkdirs(os.path.join(Demeter.path, 'runtime','upload', file_path)) + '/' + Demeter.md5(file_name) + '.jpg'
