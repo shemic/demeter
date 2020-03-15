@@ -36,6 +36,12 @@
             <input type="file" class="layui-upload-file" lay-type="images" name="file" id="upload_{{value[0]}}"/>
             <input class="layui-input" type="hidden" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}"/>
           </div>
+      {% elif value[1] == 'file' %}
+          <div class="site-demo-upbar">
+            <div id="upload_{{value[0]}}_show_div"></div>
+            <input type="file" class="layui-upload-file" lay-type="file" name="file" id="upload_{{value[0]}}"/>
+            <input class="layui-input" type="hidden" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}"/>
+          </div>
       {% elif value[1] == 'switch' %}
           <input class="layui-input" type="checkbox" lay-skin="switch" lay-text="{{value[3]}}" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}"
           autocomplete="off" class="layui-input" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% else %}True{% end %}" />
