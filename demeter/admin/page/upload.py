@@ -16,7 +16,7 @@ class upload_path(Load):
 		url = self.request.protocol + "://" + self.request.host
 		file_metas = self.request.files["file"]
 
-		# print(file_metas)
+		print(file_metas)
 		day = str(date.today())
 		day = day.split('-')
 		for meta in file_metas:

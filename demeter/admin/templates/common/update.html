@@ -38,7 +38,7 @@
           </div>
       {% elif value[1] == 'file' %}
           <div class="site-demo-upbar">
-            <div id="upload_{{value[0]}}_show_div"></div>
+            <span id="upload_{{value[0]}}_show_div"></span>
             <input type="file" class="layui-upload-file" lay-type="file" name="file" id="upload_{{value[0]}}"/>
             <input class="layui-input" type="hidden" id="update_{{value[0]}}" name="update_{{value[0]}}" lay-verify="{{value[2]}}" value="{% if data['info'] and value[0] in data['info'] %}{{data['info'][value[0]]}}{% end %}"/>
           </div>

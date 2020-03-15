@@ -128,7 +128,7 @@
                 ,success: function(res, input){ //上传成功后的回调
                     var id = $(input).attr('id').replace('upload_', '');
                     if ($('#upload_' + id + '_show_div').length) {
-                        $('#upload_' + id + '_show_div').html(res.data.src)
+                        $('#upload_' + id + '_show_div').html('已上传')
                     } else {
                         $('#upload_' + id + '_show').attr('src',res.data.src + '?v' + Date.parse(new Date())).show();
                     }
