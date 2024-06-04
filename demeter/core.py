@@ -70,7 +70,7 @@ class Demeter(object):
 			filename = self.path + 'conf/'+self.getConfigName()+'.conf'
 			if File.exists(filename):
 				config = self.getConfig()
-				config.read(filename)
+				config.read(filename, encoding="utf-8")
 
 				for item in config.sections():
 					self.config[item] = self.readConfig(config, item)
@@ -132,7 +132,7 @@ class Demeter(object):
 		file = self.path + name
 		if not File.exists(file):
 			file = self.root + name
-		self.echo(File.read(file))
+		self.echo(File.read(file, encoding="utf-8"))
 		sys.exit()
 
 	@classmethod
@@ -140,7 +140,7 @@ class Demeter(object):
 		temp = Demeter.path + 'conf/temp.conf'
 		if File.exists(temp):
 			config = self.getConfig()
-			config.read(temp)
+			config.read(temp, encoding="utf-8")
 			if key and name:
 				config.set(key, name, value)
 				config.write(open(temp, 'w'))
