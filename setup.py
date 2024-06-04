@@ -10,7 +10,7 @@ import demeter
 
 def read(filename):
     """Read and return `filename` in root dir of project and return string"""
-    return codecs.open(os.path.join(__DIR__, filename), 'r').read()
+    return codecs.open(os.path.join(__DIR__, filename), 'r', 'utf-8', errors='ignore').read()
 
 
 install_requires = read("requirements.txt").split()
