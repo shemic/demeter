@@ -196,11 +196,10 @@ class Web(object):
 
 	@classmethod
 	def setting(self, method):
-		return self.async(method)
+		return self.run(method)
 		
 	@staticmethod
-	def async(method):
-		@tornado.web.asynchronous
+	def run(method):
 		@tornado.gen.coroutine
 		@functools.wraps(method)
 		def callback(self, *args, **kwargs):

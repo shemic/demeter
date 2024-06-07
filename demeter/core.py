@@ -532,7 +532,8 @@ class File(object):
 		handle = open(file, 'w')
 		handle.write(content)
 		handle.close()
-		Shell.popen('chmod +x ' + file)
+		#Shell.popen('chmod +x ' + file)
+		os.chmod(file, 0o666)
 
 	@staticmethod
 	def read(path, name = ''):

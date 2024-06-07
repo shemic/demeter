@@ -744,9 +744,9 @@ class Sql(object):
 			value = str((int(page['current'])-1) * page['num']) + ',' + str(page['num'])
 		if value:
 			value = value.split(',')
-			if self.type == 'mysql':
-				result = ' LIMIT ' + value[0] + ',' + value[1]
-			elif self.type == 'postgresql':
+			if self.type == 'postgresql':
 				result = ' LIMIT ' + value[1] + ' OFFSET ' + value[0]
+			else:
+				result = ' LIMIT ' + value[0] + ',' + value[1]
 
 		return result
