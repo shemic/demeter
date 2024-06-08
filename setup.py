@@ -18,7 +18,7 @@ long_description = read('README.rst')
 
 
 setup(
-    name="Demeter",
+    name="demeter_lib",
     version=demeter.__version__,
     url='https://github.com/shemic/demeter',
     license='MIT License',

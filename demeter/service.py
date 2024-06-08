@@ -8,8 +8,8 @@ from demeter.core import *
 
 class Service(object):
 
-	def list(self, name, state = True, search=None, page=False, order='cdate desc', limit = '0,100'):
-		model = self.model(name)
+	def list(self, model, state = True, search=None, page=False, order='cdate desc', limit = '0,100'):
+		model = self.model(model)
 		if state != -1:
 			model.state = state
 		if search:
@@ -28,16 +28,16 @@ class Service(object):
 		data = model.select(page=page, order=order, limit=limit)
 		return data
 
-	def one(self, name, **kwd):
-		model = self.model(name)
+	def one(self, model, **kwd):
+		model = self.model(model)
 		if kwd:
 			for key,value in kwd.items():
 				self.assign(model, key, value)
 		data = model.select(type='fetchone')
 		return data
 
-	def update(self, name, id, data, cdate=True):
-		model = self.model(name)
+	def update(self, model, id, data, cdate=True):
+		model = self.model(model)
 		if id:
 			model.id = id
 			if cdate == True and 'cdate' not in data:
@@ -50,23 +50,23 @@ class Service(object):
 					method = 'time'
 				self.assign(model, key, value, method)
 			id = model.insert()
-		#Demeter.sync(name, id)
+		#Demeter.sync(model, id)
 		return id
 
-	def delete(self, name, id, state = False):
-		model = self.model(name)
+	def delete(self, model, id, state = False):
+		model = self.model(model)
 		model.id = id
 		state = model.update(state=state)
-		#Demeter.sync(name, id)
+		#Demeter.sync(model, id)
 		return state
 
-	def rDelete(self, name, id):
-		model = self.model(name)
+	def rDelete(self, model, id):
+		model = self.model(model)
 		model.id = id
 		return model.delete()
 
-	def model(self, name):
-		return Demeter.model(name)
+	def model(self, model):
+		return Demeter.model(model)
 
 	def assign(self, model, key, value, method='assign'):
 		if hasattr(model, key):

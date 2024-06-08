@@ -3,4 +3,4 @@
     demeter init
     author:rabin
 """
-__version__ = '1.0.0'
+__version__ = '1.0.2'

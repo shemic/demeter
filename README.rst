@@ -1,8 +1,9 @@
-# demeter框架
+# demeter类库
 
 开发语言：python
-框架：gevent+tornado+demeter类库
 
 安装：
-pip install -U git+https://github.com/shemic/demeter.git
-pip3 install -U git+https://github.com/shemic/demeter.git
+pip install demeter-lib
+
+这是一个方便你使用的类库，可以参考
+https://github.com/shemic/demeter/tree/master/demos/helloworld
