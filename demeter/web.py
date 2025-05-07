@@ -319,14 +319,13 @@ class Web(object):
 			asyncio.set_event_loop(asyncio.new_event_loop())
 		if settings['debug'] == True:
 			application.listen(settings['port'])
-			tornado.ioloop.IOLoop.instance().start()
 		else:
 			server = tornado.httpserver.HTTPServer(application, settings['max_buffer_size'])
 			server.bind(settings['port'])
 			server.start(settings['process'])
-			try:		
-				Demeter.echo('running on port %s' % settings['port'])
-				tornado.ioloop.IOLoop.instance().start()
+		try:		
+			Demeter.echo('running on port %s' % settings['port'])
+			tornado.ioloop.IOLoop.instance().start()
 
-			except KeyboardInterrupt:
-				tornado.ioloop.IOLoop.instance().stop()
+		except KeyboardInterrupt:
+			tornado.ioloop.IOLoop.instance().stop()

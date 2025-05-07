@@ -308,7 +308,7 @@ class Demeter(object):
 
 	@classmethod
 	def hash(self):
-		return self.md5(str(time.clock()))
+		return self.md5(str(time.perf_counter()))
 
 	@classmethod
 	def uuid(self, value):
@@ -605,6 +605,14 @@ class File(object):
 	@classmethod
 	def runtime(self, path = 'data'):
 		return self.mkdir(self.path() + 'runtime/' + path + '/')
+
+	@classmethod
+	def dest(self, path, name, size = 2, total = 6):
+		data = [name[i:i+size] for i in range(0, total, size)]
+		for key, value in enumerate(data):
+			path = path + value + '/'
+		path = self.mkdirs(path)
+		return path + name
 
 	"""
 	实现 tail -n
